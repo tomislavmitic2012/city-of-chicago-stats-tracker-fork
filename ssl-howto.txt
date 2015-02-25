@@ -1,0 +1,45 @@
+1. cd into rest folder
+
+    $ cd ../../city_of_chicago_rest/rest
+
+2. At the command prompt enter the following command
+
+    $ openssl genrsa -des3 -out jetty.key
+
+3. When prompted for a password enter password changeme!
+
+4. When reprompted for password re-enter changeme!
+
+5. Enter the command which generates a certificate for the key
+
+    $ openssl req -new -x509 -key jetty.key -out jetty.crt
+
+    - When prompted for the key password enter cahngeme!
+    - Enter the pertinent information
+        * country code is US
+        * state or province is Illinois
+        * City is Chicago
+        * Company is DePaul Univ
+        * press enter on section name
+        * Fully qualified Domain Name is middleware.chicagostatstracker.com
+        * For email address use your email address
+
+6. The following OpenSSL command combines the keys in jetty.key and the certificate in the jetty.crt file into the jetty.pkcs12 file
+
+    $ openssl pkcs12 -inkey jetty.key -in jetty.crt -export -out jetty.pkcs12
+    
+    - OpenSSL asks for an export password. A non-empty password is required to make the next step work: enter changeme! as the password
+
+7. Then load the resulting PKCS12 file into a JSSE keystore with keytool
+
+    $ keytool -importkeystore -srckeystore jetty.pkcs12 -srcstoretype PKCS12 -destkeystore keystore
+
+8. Add the appropriate config files into jetty: jetty-ssl.xml, jetty-https.xml (See project)
+
+9. Add an httpConfig segment into jetty9.xml (See project)
+
+10. For the jetty server add the following entry into your /etc/hosts file
+
+    127.0.0.1       middleware.chicagostatstracker.com
+
+You now have ssl configured in your project. Enjoy! Happy SSLing!
