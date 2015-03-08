@@ -34,6 +34,7 @@
     <bean id="userRoleDao" class="com.depaul.edu.se491.dao.user.UserRoleDaoImpl"/>
     <bean id="favoriteDatasetsDao" class="com.depaul.edu.se491.dao.favorites.FavoriteDatasetsDaoImpl"/>
     <bean id="alertQueriesDao" class="com.depaul.edu.se491.dao.alert.AlertQueriesDaoImpl"/>
+    <bean id="mongoDao" class="com.depaul.edu.se491.dao.mongo.MongoDaoImpl"/>
 
     <bean id="queryService" class="com.depaul.edu.se491.service.query.QueryServiceImpl">
         <constructor-arg name="url" value="${app.socrata_url}"/>
@@ -51,8 +52,13 @@
     <bean id="userRoleService" class="com.depaul.edu.se491.service.user.UserRoleServiceImpl"/>
     <bean id="userFavoriteDatasetsService" class="com.depaul.edu.se491.service.favorites.FavoriteDatasetsServiceImpl"/>
     <bean id="userAlertQueriesService" class="com.depaul.edu.se491.service.alert.AlertQueriesServiceImpl"/>
+    <bean id="mongoService" class="com.depaul.edu.se491.service.mongo.MongoServiceImpl"/>
 
     <bean id="sodaResource" class="com.depaul.edu.se491.resource.soda.SodaResource"></bean>
+    <bean id="alertResource" class="com.depaul.edu.se491.resource.alert.AlertResource"/>
+    <bean id="userResource" class="com.depaul.edu.se491.resource.user.UserResource" />
+    <bean id="favoritesResource" class="com.depaul.edu.se491.resource.favorites.FavoriteDatasetsResource" />
+    <bean id="mongoResource" class="com.depaul.edu.se491.resource.mongo.MongoResource"/>
 
     <bean id="cityOfChicagoStatsDS" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>

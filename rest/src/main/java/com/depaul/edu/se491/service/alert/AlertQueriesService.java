@@ -1,5 +1,6 @@
 package com.depaul.edu.se491.service.alert;
 
+import com.depaul.edu.se491.dao.alert.AlertQueriesEntity;
 import com.depaul.edu.se491.resource.alert.AlertQueries;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface AlertQueriesService {
      * @param id
      * @return List<AlertQueriesEntity>
      */
-    public List<AlertQueries> getAlertQueriesByUserId(Long id);
+    public List<AlertQueriesEntity> getAlertQueriesByUserId(Long id);
 
     /**
      * Get all alert queries for a particular user.
@@ -23,7 +24,7 @@ public interface AlertQueriesService {
      * @param uuid
      * @return List<AlertQueriesEntity>
      */
-    public List<AlertQueries> getAlertQueriesByUserUuid(String uuid);
+    public List<AlertQueriesEntity> getAlertQueriesByUserUuid(String uuid);
 
     /**
      * Get an alert query by it's id.
@@ -31,7 +32,7 @@ public interface AlertQueriesService {
      * @param id
      * @return AlertQueriesEntity
      */
-    public AlertQueries getAlertQueryById(Long id);
+    public AlertQueriesEntity getAlertQueryById(Long id);
 
     /**
      * Disable the alert query.
@@ -52,7 +53,7 @@ public interface AlertQueriesService {
      *
      * @param aqe
      */
-    public void updateAlertQuery(AlertQueries aqe);
+    public void updateAlertQuery(AlertQueriesEntity aqe);
 
     /**
      * Create an alert query
@@ -60,5 +61,5 @@ public interface AlertQueriesService {
      * @param aqe
      * @return id
      */
-    public Long createAlertQuery(AlertQueries aqe);
+    public Long createAlertQuery(AlertQueriesEntity aqe);
 }

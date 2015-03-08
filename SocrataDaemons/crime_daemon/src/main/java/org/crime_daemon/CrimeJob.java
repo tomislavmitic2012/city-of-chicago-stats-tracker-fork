@@ -88,7 +88,7 @@ public class CrimeJob implements Job {
 				
 		try {
 			
-			Properties mongoProperty = getMongoPropertyValue();			
+			Properties mongoProperty = getMongoPropertyValue();
 			String dbHost = mongoProperty.getProperty("mongo_host");
 					
 			MongoClient mongoClient = new MongoClient(dbHost);

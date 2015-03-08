@@ -1,5 +1,6 @@
 package com.depaul.edu.se491.resource.user;
 
+import com.depaul.edu.se491.errorhandling.AppException;
 import com.depaul.edu.se491.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,6 @@ public class UserResource {
     ) {
 
         return userService.getUsers(orderByInsertionDate);
-
     }
 
     @GET
@@ -80,7 +80,7 @@ public class UserResource {
     @Produces({MediaType.TEXT_HTML})
     public Response disableUserById(
             @QueryParam("id") Long id
-    ) {
+    ) throws AppException {
 
         userService.disableUserById(id);
 
@@ -94,8 +94,7 @@ public class UserResource {
     @POST
     @Path("/disable_all_users")
     @Produces({MediaType.TEXT_HTML})
-    public Response disableAllUsers() {
-
+    public Response disableAllUsers() throws AppException {
 
         userService.disableAllUsers();
 
@@ -110,7 +109,7 @@ public class UserResource {
     @Produces({MediaType.TEXT_HTML})
     public Response disableUserByUuid(
             @QueryParam("uuid") String uuid
-    ) {
+    ) throws AppException {
         userService.disableUserByUuid(uuid);
 
         return Response.status(Response.Status.OK)
@@ -121,7 +120,7 @@ public class UserResource {
     @POST
     @Path("/enable_all_users")
     @Produces({MediaType.TEXT_HTML})
-    public Response enableAllUsers() {
+    public Response enableAllUsers() throws AppException {
 
         userService.enableAllUsers();
 
@@ -136,7 +135,7 @@ public class UserResource {
     @Produces({MediaType.TEXT_HTML})
     public Response enableUserById(
             @QueryParam("id") Long id
-    ){
+    ) throws AppException {
 
         userService.enableUserById(id);
 
@@ -151,7 +150,7 @@ public class UserResource {
     @Produces({MediaType.TEXT_HTML})
     public Response enableUserByUuid(
             @QueryParam("uuid") String uuid
-    ){
+    ) throws AppException {
         userService.enableUserByUuid(uuid);
 
         return Response.status(Response.Status.OK)
@@ -164,7 +163,7 @@ public class UserResource {
     @Path("/update_user")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.TEXT_HTML})
-    public Response updateUser(User u){
+    public Response updateUser(User u) throws AppException {
 
         userService.updateUser(u);
 
@@ -177,7 +176,7 @@ public class UserResource {
     @Path("/create_user")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.TEXT_HTML})
-    public Response createUser(User u) {
+    public Response createUser(User u) throws AppException {
         Long id = userService.createUser(u);
         User c_u = userService.getUserById(id);
 

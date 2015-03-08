@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChicagoStatsTracker</title>
+
+  <!-- Bootstrap -->
+  <link href="css/bootstrap.css" rel="stylesheet" />
+  <link href="css/bootstrap-table.css" rel="stylesheet" />
+  <link href="css/offcanvas.css" rel="stylesheet" />
+  <link href="css/styles.css" rel="stylesheet" />
+  <link href="css/font-awesome.css" rel="stylesheet" />
+  <link href="css/bootstrap.min.css" rel="stylesheet" >
+
+
+
+
+</head>
+<body>
+ <nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="navbar-brand" >Chicago Stat Tracker</div>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href = "signin.html" class="fa fa-sign-out fa-3x"></a></li>        
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<div class="container-fluid">
+
+  <!--1ST COLUMN-->
+  <div class="col-sm-3 col-md-2 sidebar">
+   <ul class="nav nav-sidebar"> 
+    <li><a href="#" class="scroll-link" data-id="myDataSet"><i class="fa fa-database fa-3x"></i>myDataSet</a></li> 
+    <li><a href="#" class="scroll-link" data-id="overView"><i class="fa fa-desktop fa-3x"></i>OverView</a></li>
+    <li><a href="#" class="scroll-link" data-id="filterData"><i class="fa fa-filter fa-3x"></i>FilterData</a></li>
+    <li><a href="#" class="scroll-link" data-id="chartView"><i class="fa fa-bar-chart-o fa-3x"></i>Charts</a></li>   
+    <li><a href="#" class="scroll-link" data-id="myProfile"><i class="fa fa-user fa-3x"></i> myProfile </a></li>               
+  </ul>
+
+</div>
+<!--2ND COLUMN-->
+
+<div id="myDataSet" class="page-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr><th>My Query Searches</th><th>Date</th><th>Description</th></tr>
+          </thead>
+          <tbody data-bind="foreach: myData">
+            <tr>
+              <td data-bind="text: id"></td>
+              <td data-bind="text: city"></td>
+              <td data-bind="text: date_last_confirmed"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>   
+    </div>
+  </div>
+  <!--/.container-->
+</div>
+
+<div id="overView" class="page-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+       <div>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr><th>Beat</th><th>Arrest</th><th>Description</th><th>Block</th></tr>
+          </thead>
+          <tbody data-bind="foreach: crimes">
+            <tr>
+              <td data-bind="text: beat"></td>
+              <td data-bind="text: arrest"></td>
+              <td data-bind="text: _primary_decsription"></td>
+              <td data-bind="text: block"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/.container-->
+</div>
+
+
+<div id="filterData" class="page-section" >
+  <div class="container">
+
+    <div class="row" >
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div data-bind="foreach: filterItem">
+          <div class="panel panel-default">
+            <span class="filter-close-icon" data-bind="click: $parent.removeFilterLine"><a class="fa fa-times-circle-o fa-2x" ></a></span>
+            <form class="form-inline">
+              <div class="form-group">         
+               <select data-bind="options: $parent.filterDropdown"  class="form-control"></select>
+             </div><!-- /input-group -->
+             <div class="form-group">
+              <input type="text" class="form-control" aria-label="...">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <button id="addFilter" type="submit" class="btn btn-add-filter center-block" data-bind="click: filterItemLine"><i class="fa fa-plus fa-2x"></i>NewFilter</button>
+      </div>
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+       <button type="submit" class="btn btn-lg btn-default-search center-block">Search</button>
+     </div>
+   </div>
+ </div>
+
+</div><!--/.container-->
+</div>
+
+<div id="chartView" class="page-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="panel panel-info" >
+          <canvas id="myChart" width="900" height="700"></canvas>
+        </div>       
+      </div>
+    </div>
+  </div>
+  <!--/.container-->
+</div>
+
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script data-main="js/bootstrap/main-main" src="js/libs/require.js"></script>
+</body>
+</html>

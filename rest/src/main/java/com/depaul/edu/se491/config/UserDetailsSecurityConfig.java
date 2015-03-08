@@ -22,10 +22,10 @@ import java.util.Arrays;
 /**
  * Created by adampodraza on 2/13/15.
  */
-@Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
-@Order(Ordered.LOWEST_PRECEDENCE - 6)
+//@Configuration
+//@EnableWebSecurity
+//@EnableGlobalMethodSecurity(securedEnabled = true)
+//@Order(Ordered.LOWEST_PRECEDENCE - 6)
 public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

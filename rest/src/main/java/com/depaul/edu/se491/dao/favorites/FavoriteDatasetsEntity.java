@@ -1,9 +1,13 @@
 package com.depaul.edu.se491.dao.favorites;
 
 import com.depaul.edu.se491.dao.user.UserEntity;
+import com.depaul.edu.se491.resource.favorites.FavoriteDatasets;
+import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 /**
@@ -33,6 +37,17 @@ public class FavoriteDatasetsEntity {
     private Date createdDate;
 
     public FavoriteDatasetsEntity() {}
+    
+    public FavoriteDatasetsEntity(FavoriteDatasets fde) {
+        try {
+            BeanUtils.copyProperties(this, fde);
+            this.createdDate = new Date();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
 
     public FavoriteDatasetsEntity(Long id, UserEntity user, String query, String notes) {
         this.id = id;

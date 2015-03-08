@@ -1,0 +1,4 @@
+mongoimport --db socrata --type csv --headerline --file crimes.csv
+mongoimport --db socrata --type csv --headerline --file foodinspections.csv
+mongoimport --db socrata --type csv --headerline --file potholes.csv
+mongoimport --db socrata --type csv --headerline --file salaries.csv

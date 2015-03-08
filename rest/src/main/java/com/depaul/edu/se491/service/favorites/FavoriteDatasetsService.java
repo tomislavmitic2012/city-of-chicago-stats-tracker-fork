@@ -41,7 +41,7 @@ public interface FavoriteDatasetsService {
     public void updateFavoriteDatasets(FavoriteDatasets fde);
 
     /**
-     * Creates a favorite dataset for the user.
+	     * Creates a favorite dataset for the user.
      *
      * @param fde
      * @return id

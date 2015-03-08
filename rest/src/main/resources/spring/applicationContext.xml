@@ -33,6 +33,7 @@
     <bean id="userRoleDao" class="com.depaul.edu.se491.dao.user.UserRoleDaoImpl"/>
     <bean id="favoriteDatasetsDao" class="com.depaul.edu.se491.dao.favorites.FavoriteDatasetsDaoImpl"/>
     <bean id="alertQueriesDao" class="com.depaul.edu.se491.dao.alert.AlertQueriesDaoImpl"/>
+    <bean id="mongoDao" class="com.depaul.edu.se491.dao.mongo.MongoDaoImpl"/>
 
     <bean id="queryService" class="com.depaul.edu.se491.service.query.QueryServiceImpl">
         <constructor-arg name="url" value="${app.socrata_url}"/>
@@ -50,11 +51,29 @@
     <bean id="userRoleService" class="com.depaul.edu.se491.service.user.UserRoleServiceImpl"/>
     <bean id="userFavoriteDatasetsService" class="com.depaul.edu.se491.service.favorites.FavoriteDatasetsServiceImpl"/>
     <bean id="userAlertQueriesService" class="com.depaul.edu.se491.service.alert.AlertQueriesServiceImpl"/>
+    <bean id="mongoService" class="com.depaul.edu.se491.service.mongo.MongoServiceImpl"/>
 
     <bean id="sodaResource" class="com.depaul.edu.se491.resource.soda.SodaResource"></bean>
+    <bean id="alertResource" class="com.depaul.edu.se491.resource.alert.AlertResource"/>
+    <bean id="userResource" class="com.depaul.edu.se491.resource.user.UserResource" />
+    <bean id="favoritesResource" class="com.depaul.edu.se491.resource.favorites.FavoriteDatasetsResource" />
+    <bean id="mongoResource" class="com.depaul.edu.se491.resource.mongo.MongoResource"/>
 
     <bean id="cityOfChicagoStatsDS" class="org.springframework.jndi.JndiObjectFactoryBean" scope="singleton">
         <property name="jndiName" value="java:comp/env/jdbc/restChicagoStatsDB" />
         <property name="resourceRef" value="true" />
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://localhost:5432/city_of_chicago_stats_app"/>
+        <property name="username" value="${app.mongo_username}"/>
+        <property name="password" value="${app.mongo_password}"/>
+    </bean>
+
+    <bean id="customJdbcDaoImpl" class="com.depaul.edu.se491.dao.CustomJdbcDaoImpl">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="usersByUsernameQuery" value="select id,password, enabled from users where email=?"/>
+        <property name="authoritiesByUsernameQuery" value="select user_id, role from user_roles where user_id=?"/>
     </bean>
 </beans>

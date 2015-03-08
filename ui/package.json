@@ -1,0 +1,17 @@
+{
+    "name" : "chicago-stats-tracker-front-end-poc"
+  , "version" : "0.0.1"
+  , "private" : true
+  , "dependencies" : {
+    "serve-static" : "latest"
+    , "vhost" : "latest"
+    , "ejs" : "latest"
+    , "express" : "latest"
+    , "connect" : "latest"
+    , "ms" : "latest"
+  }
+  , "devDependencies": {}
+  , "scripts" : {
+    "start" : "sudo node server.js"
+  }
+}

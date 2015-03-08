@@ -1,5 +1,7 @@
 package com.depaul.edu.se491.service.user;
 
+import com.depaul.edu.se491.dao.user.UserDao;
+import com.depaul.edu.se491.errorhandling.AppException;
 import com.depaul.edu.se491.resource.user.User;
 
 import java.util.List;
@@ -46,45 +48,45 @@ public interface UserService {
      *
      * @param id
      */
-    public void disableUserById(Long id);
+    public void disableUserById(Long id) throws AppException;
 
     /**
      * Disable all users
      */
-    public void disableAllUsers();
+    public void disableAllUsers() throws AppException;
 
     /**
      * The user's enabled flag is set to false
      *
      * @param uuid
      */
-    public void disableUserByUuid(String uuid);
+    public void disableUserByUuid(String uuid) throws AppException;
 
     /**
      * Enable all users
      */
-    public void enableAllUsers();
+    public void enableAllUsers() throws AppException;
 
     /**
      * The user's enabled flag is set to true
      *
      * @param id
      */
-    public void enableUserById(Long id);
+    public void enableUserById(Long id) throws AppException;
 
     /**
      * The user's enabled flag is set to true
      *
      * @param id
      */
-    public void enableUserByUuid(String id);
+    public void enableUserByUuid(String id) throws AppException;
 
     /**
      * Update the user
      *
      * @param userEntity
      */
-    public void updateUser(User userEntity);
+    public void updateUser(User userEntity) throws AppException;
 
     /**
      * Create a user
@@ -92,5 +94,7 @@ public interface UserService {
      * @param userEntity
      * @return id
      */
-    public Long createUser(User userEntity);
+    public Long createUser(User userEntity) throws AppException;
+
+    public void setUserDao(UserDao userDao);
 }

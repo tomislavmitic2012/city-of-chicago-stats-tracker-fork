@@ -14,9 +14,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 /**
  * Created by adampodraza on 2/13/15.
  */
-@Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
+//@Configuration
+//@EnableWebSecurity
+//@EnableGlobalMethodSecurity(securedEnabled = true)
 public class InMemorySecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

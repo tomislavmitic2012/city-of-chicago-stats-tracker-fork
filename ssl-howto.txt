@@ -36,9 +36,15 @@
 
 8. Add the appropriate config files into jetty: jetty-ssl.xml, jetty-https.xml (See project)
 
-9. Add an httpConfig segment into jetty9.xml (See project)
+9. Add the correct path to the java keystore in the jetty-ssl.xml
 
-10. For the jetty server add the following entry into your /etc/hosts file
+<Set name="KeyStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.keystore" default="<!-- path_to_keystore/keystore -->"/></Set>
+    <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="changeme!"/></Set>
+    <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="changeme!"/></Set>
+    <Set name="TrustStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.truststore" default="<!-- path_to_keystore/keystore -->"/></Set>
+    <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="changeme!"/></Set>
+
+9. For the jetty server add the following entry into your /etc/hosts file
 
     127.0.0.1       middleware.chicagostatstracker.com
 

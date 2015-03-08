@@ -2,10 +2,13 @@ package com.depaul.edu.se491.service.user;
 
 import com.depaul.edu.se491.dao.user.UserDao;
 import com.depaul.edu.se491.dao.user.UserEntity;
+import com.depaul.edu.se491.errorhandling.AppException;
 import com.depaul.edu.se491.resource.user.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional("transactionManager")
-    public void disableUserById(Long id) {
+    public void disableUserById(Long id) throws AppException{
 
         userDao.disableUserById(id);
 
@@ -59,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional("transactionManager")
-    public void disableAllUsers() {
+    public void disableAllUsers() throws AppException {
 
         userDao.disableAllUsers();
 
@@ -67,7 +70,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional("transactionManager")
-    public void disableUserByUuid(String uuid) {
+    public void disableUserByUuid(String uuid) throws AppException{
+
+        if(userDao.getUserByUuid(uuid) == null) {
+            throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 409, "User doesn't exist",
+                    "Please verify that user exists.", "/updatepage");
+        }
 
         userDao.disableUserByUuid(uuid);
 
@@ -75,7 +83,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional("transactionManager")
-    public void enableAllUsers() {
+    public void enableAllUsers() throws AppException{
 
         userDao.enableAllUsers();
 
@@ -83,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional("transactionManager")
-    public void enableUserById(Long id) {
+    public void enableUserById(Long id) throws AppException{
 
         userDao.enableUserById(id);
 
@@ -91,17 +99,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional("transactionManager")
-    public void enableUserByUuid(String id) {
+    public void enableUserByUuid(String uuid) throws AppException {
 
-        userDao.enableUserByUuid(id);
+        if(userDao.getUserByUuid(uuid) == null) {
+            throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 409, "User doesn't exist",
+                    "Please verify that user exists.", "/updatepage");
+        }
+
+        userDao.enableUserByUuid(uuid);
 
     }
 
     @Override
     @Transactional("transactionManager")
-    public void updateUser(User userEntity) {
+    public void updateUser(User userEntity) throws AppException{
 
-        if(userDao.getUserByUuid(userEntity.getUuid()) != null) {
+        if(userDao.getUserByUuid(userEntity.getUuid()) != null || userDao.getUserByEmail(userEntity.getEmail()) != null) {
 
             UserEntity entity = getEntityFromUser(userEntity);
 
@@ -111,12 +124,25 @@ public class UserServiceImpl implements UserService {
 
         else {
             //If user doesn't exist in database, do something else
+            throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 409, "User doesn't exist",
+                    "Please verify that user exists.", "/updatepage");
         }
     }
 
     @Override
     @Transactional("transactionManager")
-    public Long createUser(User userEntity) {
+    public Long createUser(User userEntity) throws AppException {
+
+        UserEntity userEntity1 = userDao.getUserByUuid(userEntity.getUuid());
+
+        UserEntity userEntity2 = userDao.getUserByEmail(userEntity.getEmail());
+
+        if(userEntity1 != null || userEntity2 != null) {
+            throw new AppException(Response.Status.CONFLICT.getStatusCode(), 409, "User already exists",
+                    "Please verify that the user does not already exist.", "/loginpage");
+        }
+
+        validateInputForCreation(userEntity);
 
         UserEntity entity = new UserEntity(userEntity);
 
@@ -125,6 +151,33 @@ public class UserServiceImpl implements UserService {
         return id;
     }
 
+    private void validateInputForCreation(User userEntity) throws AppException {
+
+        if(userEntity.getEmail() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Provided data not sufficient for insertion",
+                    "Please verify that the email is properly generated/set", "/loginpage");
+        }
+
+        if(userEntity.getPassword() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Provided data not sufficient for insertion",
+                    "Please verify that the password is properly generated/set", "/loginpage");
+        }
+
+        if(userEntity.getFirstName() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Provided data not sufficient for insertion",
+                    "Please verify that the first name is properly generated/set", "/loginpage");
+        }
+
+        if(userEntity.getUuid() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Provided data not sufficient for insertion",
+                    "Please verify that the uuid is properly generated/set", "/loginpage");
+        }
+    }
+
+    @Override
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     //Private method to marshal user entity list into user list
     private List<User> getUsersFromEntities(List<UserEntity> userEntities) {

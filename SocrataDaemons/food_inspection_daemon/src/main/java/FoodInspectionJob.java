@@ -1,3 +1,6 @@
+import com.mongodb.BasicDBList;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -8,10 +11,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.Properties;
 
 /**
  * Created by adampodraza on 2/16/15.
@@ -36,7 +37,8 @@ public class FoodInspectionJob implements Job {
             System.out.println(buf == null);
 
             if (buf != null) {
-                writeToFile(buf);
+                String jsonString = buf.toString();
+
 
                 } else
                     System.out.println("Entity was empty");
@@ -50,21 +52,55 @@ public class FoodInspectionJob implements Job {
 
     }
 
-    private void writeToFile(HttpEntity entity) {
+    private Properties getMongoPropertyValue() {
+
+        Properties prop = new Properties();
+        InputStream input = null;
+
         try {
 
-            //creates new file in the base directory to hold returned json
-            File foodInspections = new File("FoodInspections.txt");
-            FileOutputStream os = new FileOutputStream(foodInspections);
+            input = new FileInputStream("src/main/resources/mongoDB.properties");
+            prop.load(input);
 
-            entity.writeTo(os);
-            while(entity.isStreaming()) {
-                entity.writeTo(os);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return prop;
+    }
+
+    private void writeToMongoDB(String jsonStr) {
+
+        try {
+
+            Properties mongoProperty = getMongoPropertyValue();
+            String dbHost = mongoProperty.getProperty("mongo_host");
+
+            MongoClient mongoClient = new MongoClient(dbHost);
+
+            // get select database
+            com.mongodb.DB db = mongoClient.getDB("test");
+            com.mongodb.DBCollection collection = db.getCollection("crimesData");
+
+            // parsing JSON
+            com.mongodb.BasicDBList data = (BasicDBList) com.mongodb.util.JSON.parse(jsonStr);
+
+            //insert to collection
+            for (int i = 0; i < data.size(); i++) {
+                collection.insert((DBObject) data.get(i));
             }
 
-            os.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 }

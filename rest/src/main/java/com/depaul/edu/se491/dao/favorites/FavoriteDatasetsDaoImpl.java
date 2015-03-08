@@ -22,7 +22,7 @@ public class FavoriteDatasetsDaoImpl implements FavoriteDatasetsDao {
 
     @PersistenceContext(unitName = "cityOfChicagoStatsPersistence")
     private EntityManager entityManager;
-
+    
     @Override
     public List<FavoriteDatasetsEntity> getFavoriteDatasetsByUserId(Long id) {
         try {
@@ -36,7 +36,7 @@ public class FavoriteDatasetsDaoImpl implements FavoriteDatasetsDao {
             return new ArrayList<>();
         }
     }
-
+    
     @Override
     public List<FavoriteDatasetsEntity> getFavoriteDatasetsByUserUuid(String uuid) {
         try {
