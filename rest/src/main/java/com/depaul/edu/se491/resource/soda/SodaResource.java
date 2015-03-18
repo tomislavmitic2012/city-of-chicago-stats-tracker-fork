@@ -23,7 +23,7 @@ import java.util.List;
  *
  */
 @Component
-@Path("/")
+@Path("/soda")
 public class SodaResource {
 
     private static final Logger logger = LoggerFactory.getLogger(SodaResource.class);

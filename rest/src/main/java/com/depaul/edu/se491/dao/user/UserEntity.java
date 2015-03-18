@@ -1,23 +1,25 @@
 package com.depaul.edu.se491.dao.user;
 
+import com.depaul.edu.se491.config.AppConfig;
 import com.depaul.edu.se491.dao.alert.AlertQueriesEntity;
 import com.depaul.edu.se491.dao.favorites.FavoriteDatasetsEntity;
 import com.depaul.edu.se491.resource.user.User;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Tomislav S. Mitic on 2/13/15.
  */
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(generator="increment")
@@ -64,12 +66,13 @@ public class UserEntity {
         this.setEnabled(enabled);
         this.createdDate = new Date();
         this.uuid = uuid;
-        this.password = password;
+        this.password = AppConfig.ec.encode(password);
     }
 
     public UserEntity(User user) {
         try {
             BeanUtils.copyProperties(this, user);
+            this.password = AppConfig.ec.encode(this.password);
             this.createdDate = new Date();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
@@ -182,5 +185,40 @@ public class UserEntity {
 
     public void setAlertQueries(List<AlertQueriesEntity> alertQueries) {
         this.alertQueries = alertQueries;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.getEnabled() ? true : false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.getEnabled();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.getEnabled();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.getEnabled();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> auths = new ArrayList<>();
+        if (this.getUserRoles().size() == 0) {
+            return Collections.EMPTY_LIST;
+        }
+        this.getUserRoles().stream().forEach((r) -> auths.add(new SimpleGrantedAuthority(r.getRole())));
+        return auths;
     }
 }

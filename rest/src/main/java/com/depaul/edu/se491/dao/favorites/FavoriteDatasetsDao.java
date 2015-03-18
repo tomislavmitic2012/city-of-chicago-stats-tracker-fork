@@ -2,6 +2,8 @@ package com.depaul.edu.se491.dao.favorites;
 
 import java.util.List;
 
+import com.depaul.edu.se491.errorhandling.AppException;
+
 /**
  * Created by Tom Mitic on 2/15/15.
  */

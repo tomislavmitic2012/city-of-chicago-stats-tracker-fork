@@ -18,7 +18,7 @@ create table users(
 );
 
 insert into users("id", "uuid", "first_name", "last_name", "email", "password", "enabled") values
-                        (1, '067e6162-3b6f-4ae2-a171-2470b63dff00', 'root', 'user', 'admin@chicagostatstracker.com', 'password123', true);
+                        (1, '067e6162-3b6f-4ae2-a171-2470b63dff00', 'root', 'user', 'admin@chicagostatstracker.com', '9005848241c320b36126bfbe0e788bf480bfed428e4cacb94788935b0e5fa63a24ae4dc1d9a49b6d', true);
 
 drop table if exists user_roles;
 
@@ -52,7 +52,7 @@ create table alert_queries(
 
 insert into alert_queries("id", "user_id", "query", "notes", "startdate", "enddate", "enabled", "interval") values
                          (1, 1, 'https://soda.demo.socrata.com/resource/4tka-6guv?$where=magnitude > 3.0&source=pr',
-                         'SOQL query example', '02/11/2015', '02/13/2015', true, 0);
+                         'SOQL query example', '02/11/2015', '02/13/2015', true, 100000);
 
 drop table if exists favorite_datasets;
 

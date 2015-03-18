@@ -60,7 +60,7 @@ public class UserResource {
     }
 
     @GET
-    @Path("get_user_by_email")
+    @Path("/get_user_by_email")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getUserByEmail(
             @QueryParam("email") String email

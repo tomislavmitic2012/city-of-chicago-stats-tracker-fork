@@ -23,6 +23,19 @@ public class AlertQueriesDaoImpl implements AlertQueriesDao {
     private EntityManager entityManager;
 
     @Override
+    public List<AlertQueriesEntity> getAllAlerts() {
+        try {
+            StringBuilder q = new StringBuilder("Select aq from AlertQueriesEntity aq")
+                    .append(" order by id desc");
+            TypedQuery<AlertQueriesEntity> qu = entityManager.createQuery(q.toString(), AlertQueriesEntity.class);
+            return qu.getResultList();
+        } catch(Exception e) {
+            logger.error(String.format("Error fetching alert queries, exception thrown: %s", e));
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
     public List<AlertQueriesEntity> getAlertQueriesByUserId(Long id) {
         try {
             StringBuilder q = new StringBuilder("Select aq from AlertQueriesEntity aq where aq.user.id = ").append(id)

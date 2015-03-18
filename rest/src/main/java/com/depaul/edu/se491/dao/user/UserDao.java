@@ -1,11 +1,13 @@
 package com.depaul.edu.se491.dao.user;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import java.util.List;
 
 /**
  * Created by Tomislav S. Mitic on 2/13/15.
  */
-public interface UserDao {
+public interface UserDao extends UserDetailsService {
 
     /**
      * Get all users in the system. Limit 50

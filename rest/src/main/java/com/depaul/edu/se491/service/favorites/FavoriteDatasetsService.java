@@ -1,5 +1,7 @@
 package com.depaul.edu.se491.service.favorites;
 
+import com.depaul.edu.se491.dao.favorites.FavoriteDatasetsDao;
+import com.depaul.edu.se491.errorhandling.AppException;
 import com.depaul.edu.se491.resource.favorites.FavoriteDatasets;
 
 import java.util.List;
@@ -38,13 +40,16 @@ public interface FavoriteDatasetsService {
      *
      * @param fde
      */
-    public void updateFavoriteDatasets(FavoriteDatasets fde);
+    public void updateFavoriteDatasets(FavoriteDatasets fde) throws AppException;
 
     /**
 	     * Creates a favorite dataset for the user.
      *
      * @param fde
      * @return id
+     * @throws AppException 
      */
-    public Long createFavoriteDatasets(FavoriteDatasets fde);
+    public Long createFavoriteDatasets(FavoriteDatasets fde) throws AppException;
+
+	public void setFavoriteDatasetsDao(FavoriteDatasetsDao fdeDao);
 }

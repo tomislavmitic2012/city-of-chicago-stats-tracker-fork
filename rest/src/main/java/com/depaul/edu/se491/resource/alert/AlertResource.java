@@ -73,6 +73,7 @@ public class AlertResource {
 
         return Response.status(Response.Status.OK)
                 .entity("Alert " + id + " was created.")
+                .header("Access-Control-Allow-Headers", "X-extra-header")
                 .build();
 
     }
@@ -88,6 +89,7 @@ public class AlertResource {
 
         return Response.status(Response.Status.OK)
             .entity("Alert " + alertQueriesEntity.getId() + " was updated.")
+            .header("Access-Control-Allow-Headers", "X-extra-header")
             .build();
     }
 
@@ -100,6 +102,7 @@ public class AlertResource {
 
         return Response.status(Response.Status.OK)
                 .entity("Alert " + id + " was created.")
+                .header("Access-Control-Allow-Headers", "X-extra-header")
                 .build();
     }
 

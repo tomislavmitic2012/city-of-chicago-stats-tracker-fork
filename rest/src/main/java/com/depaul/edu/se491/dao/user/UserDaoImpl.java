@@ -2,6 +2,8 @@ package com.depaul.edu.se491.dao.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -157,5 +159,10 @@ public class UserDaoImpl implements UserDao {
         UserEntity u = entityManager.merge(userEntity);
         entityManager.flush();
         return u.getId();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return getUserByEmail(email);
     }
 }

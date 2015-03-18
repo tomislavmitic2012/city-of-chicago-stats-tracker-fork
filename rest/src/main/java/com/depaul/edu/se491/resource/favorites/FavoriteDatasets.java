@@ -1,9 +1,13 @@
 package com.depaul.edu.se491.resource.favorites;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -14,7 +18,10 @@ import com.depaul.edu.se491.dao.user.UserEntity;
 /**
  * Created by Tu Vo on 2/25/15.
  */
-public class FavoriteDatasets {
+@SuppressWarnings("restriction")
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class FavoriteDatasets implements Serializable {
 	
 
     @XmlElement(name = "id")

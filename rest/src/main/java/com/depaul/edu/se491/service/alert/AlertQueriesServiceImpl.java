@@ -16,6 +16,11 @@ public class AlertQueriesServiceImpl implements AlertQueriesService {
     private AlertQueriesDao alertQueriesDao;
 
     @Override
+    public List<AlertQueriesEntity> getAllAlerts() {
+        return alertQueriesDao.getAllAlerts();
+    }
+
+    @Override
     public List<AlertQueriesEntity> getAlertQueriesByUserId(Long id) {
         return alertQueriesDao.getAlertQueriesByUserId(id);
     }

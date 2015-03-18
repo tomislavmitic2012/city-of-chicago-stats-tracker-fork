@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context-4.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.1.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd">
 
     <context:component-scan base-package="com.depaul.edu.se491.*" />
 
@@ -59,6 +67,7 @@
     <bean id="userResource" class="com.depaul.edu.se491.resource.user.UserResource" />
     <bean id="favoritesResource" class="com.depaul.edu.se491.resource.favorites.FavoriteDatasetsResource" />
     <bean id="mongoResource" class="com.depaul.edu.se491.resource.mongo.MongoResource"/>
+    <bean id="authenticateResource" class="com.depaul.edu.se491.resource.authenticate.AuthenticateResource"/>
 
     <bean id="cityOfChicagoStatsDS" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>
@@ -66,4 +75,21 @@
         <property name="username" value="sa"/>
         <property name="password" value=""/>
     </bean>
+
+    <!-- SPRING SECURITY SETUP -->
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder">
+        <constructor-arg value="${app.secret}" />
+    </bean>
+
+    <bean id="unauthorizedEntryPoint" class="com.depaul.edu.se491.resource.UnauthorizedEntryPoint" />
+
+    <bean id="authenticationTokenProcessingFilter" class="com.depaul.edu.se491.filters.AuthenticationTokenProcessingFilter">
+        <constructor-arg ref="userDao" />
+    </bean>
+
+    <security:authentication-manager id="authenticationManager">
+        <security:authentication-provider user-service-ref="userDao">
+            <security:password-encoder ref="passwordEncoder"></security:password-encoder>
+        </security:authentication-provider>
+    </security:authentication-manager>
 </beans>

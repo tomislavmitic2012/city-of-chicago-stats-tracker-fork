@@ -20,7 +20,6 @@ public class ChicagoStatsApplication extends ResourceConfig {
         register(CORSResponseFilter.class);
         register(LoggingResponseFilter.class);
         register(EntityFilteringFeature.class);
-        register(InMemorySecurityConfig.class);
         register(BSONObjectProvider.class);
         register(DBObjectIterableProvider.class);
         register(PageResultProvider.class);

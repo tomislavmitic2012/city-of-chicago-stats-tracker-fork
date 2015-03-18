@@ -42,7 +42,6 @@ public class UserServiceTest {
     @Before
     public void setUp() throws Exception {
         userService = new UserServiceImpl();
-
         userService.setUserDao(userDao);
     }
 
@@ -247,6 +246,7 @@ public class UserServiceTest {
         userService.disableUserByUuid(USER_UUID);
 
         verify(userDao, times(1)).getUserByUuid(USER_UUID);
+        verify(userDao).disableUserByUuid(USER_UUID);
     }
 
 }

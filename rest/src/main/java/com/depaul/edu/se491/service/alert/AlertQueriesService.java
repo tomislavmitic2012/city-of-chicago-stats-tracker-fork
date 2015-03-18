@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface AlertQueriesService {
 
+    public List<AlertQueriesEntity> getAllAlerts();
+
     /**
      * Get all alert queries for a particular user.
      *

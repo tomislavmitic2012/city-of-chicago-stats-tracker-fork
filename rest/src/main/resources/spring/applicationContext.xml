@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context-4.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.1.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:component-scan base-package="com.depaul.edu.se491.*" />
 
@@ -52,28 +55,45 @@
     <bean id="userFavoriteDatasetsService" class="com.depaul.edu.se491.service.favorites.FavoriteDatasetsServiceImpl"/>
     <bean id="userAlertQueriesService" class="com.depaul.edu.se491.service.alert.AlertQueriesServiceImpl"/>
     <bean id="mongoService" class="com.depaul.edu.se491.service.mongo.MongoServiceImpl"/>
+    <bean id="alertRunnerService" class="com.depaul.edu.se491.service.alert.AlertRunnerServiceImpl">
+        <property name="userAlertQueriesService" ref="userAlertQueriesService"/>
+        <property name="mongoService" ref="mongoService"/>
+        <property name="emailService" ref="emailService"/>
+    </bean>
 
     <bean id="sodaResource" class="com.depaul.edu.se491.resource.soda.SodaResource"></bean>
     <bean id="alertResource" class="com.depaul.edu.se491.resource.alert.AlertResource"/>
     <bean id="userResource" class="com.depaul.edu.se491.resource.user.UserResource" />
     <bean id="favoritesResource" class="com.depaul.edu.se491.resource.favorites.FavoriteDatasetsResource" />
     <bean id="mongoResource" class="com.depaul.edu.se491.resource.mongo.MongoResource"/>
+    <bean id="authenticateResource" class="com.depaul.edu.se491.resource.authenticate.AuthenticateResource"/>
 
     <bean id="cityOfChicagoStatsDS" class="org.springframework.jndi.JndiObjectFactoryBean" scope="singleton">
         <property name="jndiName" value="java:comp/env/jdbc/restChicagoStatsDB" />
         <property name="resourceRef" value="true" />
     </bean>
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost:5432/city_of_chicago_stats_app"/>
-        <property name="username" value="${app.mongo_username}"/>
-        <property name="password" value="${app.mongo_password}"/>
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+        <!--<property name="driverClassName" value="org.postgresql.Driver"/>-->
+        <!--<property name="url" value="${app.postgres_uri}"/>-->
+        <!--<property name="username" value="${app.postgres_username}"/>-->
+        <!--<property name="password" value="${app.postgres_password}"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="customJdbcDaoImpl" class="com.depaul.edu.se491.dao.CustomJdbcDaoImpl">-->
+        <!--<property name="dataSource" ref="dataSource"/>-->
+        <!--<property name="usersByUsernameQuery" value="select id,password, enabled from users where email=?"/>-->
+        <!--<property name="authoritiesByUsernameQuery" value="select user_id, role from user_roles where user_id=?"/>-->
+    <!--</bean>-->
+
+    <!-- SPRING SECURITY SETUP -->
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder">
+        <constructor-arg value="${app.secret}" />
     </bean>
 
-    <bean id="customJdbcDaoImpl" class="com.depaul.edu.se491.dao.CustomJdbcDaoImpl">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="usersByUsernameQuery" value="select id,password, enabled from users where email=?"/>
-        <property name="authoritiesByUsernameQuery" value="select user_id, role from user_roles where user_id=?"/>
+    <bean id="unauthorizedEntryPoint" class="com.depaul.edu.se491.resource.UnauthorizedEntryPoint" />
+
+    <bean id="authenticationTokenProcessingFilter" class="com.depaul.edu.se491.filters.AuthenticationTokenProcessingFilter">
+        <constructor-arg ref="userDao" />
     </bean>
 </beans>

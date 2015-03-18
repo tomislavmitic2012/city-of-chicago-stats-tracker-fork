@@ -15,6 +15,8 @@
             testOnBorrow="true"
             removeAbandoned="true"
             removeAbandonedTimeout="233"
+            userName="tomislav"
+            password="mun1ak0t!"
             driverClassName="org.postgresql.Driver"
             url="jdbc:postgresql://127.0.0.1:5432/city_of_chicago_stats_app"
             />
