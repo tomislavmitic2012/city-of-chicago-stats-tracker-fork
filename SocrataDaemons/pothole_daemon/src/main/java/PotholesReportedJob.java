@@ -10,6 +10,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -19,26 +22,38 @@ public class PotholesReportedJob implements Job {
 
     private CloseableHttpClient httpClient = HttpClients.createDefault();
 
+    private String getDate() {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.add(Calendar.DATE, -1);
+
+        return dateFormat.format(cal.getTime());
+
+    }
+
 
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
-        HttpGet httpGet = new HttpGet("https://data.cityofchicago.org/resource/7as2-ds3y.json?");
+        HttpGet httpGet = new HttpGet("https://data.cityofchicago.org/resource/7as2-ds3y.json?$where=creation_date%3c%27" + getDate() + "%27");
 
         try {
             CloseableHttpResponse response = httpClient.execute(httpGet);
 
-            HttpEntity entity = response.getEntity();
+            BufferedReader buf = new BufferedReader(new InputStreamReader(
+                    (response.getEntity().getContent())));
 
+            StringBuilder builder = new StringBuilder();
+            String str = "";
 
-            BufferedHttpEntity buf = new BufferedHttpEntity(entity);
+            while ((str = buf.readLine()) != null) {
+                builder.append(str);
+            }
 
-            if (buf != null) {
-                String jsonString = buf.toString();
-                writeToMongoDB(jsonString);
-
-            } else
-                System.out.println("Entity was empty");
-
+            String jsonStr = builder.toString();
+            writeToMongoDB(jsonStr);
 
             response.close();
 
@@ -84,7 +99,7 @@ public class PotholesReportedJob implements Job {
 
             // get select database
             com.mongodb.DB db = mongoClient.getDB("test");
-            com.mongodb.DBCollection collection = db.getCollection("crimesData");
+            com.mongodb.DBCollection collection = db.getCollection("potholes");
 
             // parsing JSON
             com.mongodb.BasicDBList data = (com.mongodb.BasicDBList) com.mongodb.util.JSON.parse(jsonStr);

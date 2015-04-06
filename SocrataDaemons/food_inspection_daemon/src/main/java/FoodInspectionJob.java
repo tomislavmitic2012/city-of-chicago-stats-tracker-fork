@@ -1,4 +1,5 @@
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import org.apache.http.HttpEntity;
@@ -12,6 +13,11 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import java.io.*;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -22,29 +28,40 @@ public class FoodInspectionJob implements Job {
     private CloseableHttpClient httpClient = HttpClients.createDefault();
 
 
+    private String getDate() {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.add(Calendar.DATE, -1);
+
+        return dateFormat.format(cal.getTime());
+
+    }
 
  
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        HttpGet httpGet = new HttpGet("https://data.cityofchicago.org/resource/4ijn-s7e5.json?");
+
+        HttpGet httpGet = new HttpGet("https://data.cityofchicago.org/resource/4ijn-s7e5.json?$where=inspection_date%3c%27" + getDate() + "%27");
 
         try {
             CloseableHttpResponse response = httpClient.execute(httpGet);
 
-            HttpEntity entity = response.getEntity();
+            BufferedReader buf = new BufferedReader(new InputStreamReader(
+                    (response.getEntity().getContent())));
 
-            //System.out.println(entity.getContent().read());
-            BufferedHttpEntity buf = new BufferedHttpEntity(entity);
-            System.out.println(buf == null);
+            StringBuilder builder = new StringBuilder();
+            String str = "";
 
-            if (buf != null) {
-                String jsonString = buf.toString();
+            while ((str = buf.readLine()) != null) {
+                builder.append(str);
+            }
 
+            String jsonStr = builder.toString();
+            writeToMongoDB(jsonStr);
 
-                } else
-                    System.out.println("Entity was empty");
-
-
-           response.close();
+            response.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -88,14 +105,16 @@ public class FoodInspectionJob implements Job {
 
             // get select database
             com.mongodb.DB db = mongoClient.getDB("test");
-            com.mongodb.DBCollection collection = db.getCollection("crimesData");
+            com.mongodb.DBCollection collection = db.getCollection("foodinspections");
+
+            System.out.println(jsonStr);
 
             // parsing JSON
-            com.mongodb.BasicDBList data = (BasicDBList) com.mongodb.util.JSON.parse(jsonStr);
+            com.mongodb.BasicDBList data = (com.mongodb.BasicDBList) com.mongodb.util.JSON.parse(jsonStr);
 
             //insert to collection
             for (int i = 0; i < data.size(); i++) {
-                collection.insert((DBObject) data.get(i));
+                collection.insert((com.mongodb.DBObject) data.get(i));
             }
 
         } catch (IOException e) {

@@ -66,7 +66,7 @@ public class PotholesReportedQuartzRunner {
     }
 
     public static void main(String [] args) {
-        PotholesReportedQuartzRunner foodInspectionQuartzRunner = new PotholesReportedQuartzRunner(9, 54);
+        PotholesReportedQuartzRunner foodInspectionQuartzRunner = new PotholesReportedQuartzRunner(23, 59);
         PotholesReportedQuartzRunner.start();
     }
 }

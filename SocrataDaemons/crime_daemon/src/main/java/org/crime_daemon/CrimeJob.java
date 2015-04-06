@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Properties;
 
 /**
@@ -30,10 +32,23 @@ public class CrimeJob implements Job {
 
 	private CloseableHttpClient httpClient = HttpClients.createDefault();
 
+    private String getDate() {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.add(Calendar.DATE, -1);
+
+        return dateFormat.format(cal.getTime());
+
+    }
+
 	public void execute(JobExecutionContext jobExecutionContext)
 			throws JobExecutionException {
 		HttpGet httpGet = new HttpGet(
-				"https://data.cityofchicago.org/resource/ijzp-q8t2.json");
+				"https://data.cityofchicago.org/resource/ijzp-q8t2.json?$where=updated_on%3c%27" + getDate() + "%27");
+
 
 		try {
 			CloseableHttpResponse response = httpClient.execute(httpGet);
