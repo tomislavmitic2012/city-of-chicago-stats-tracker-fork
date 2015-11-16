@@ -3,6 +3,7 @@ package com.depaul.edu.se491.dao.mongo;
 import com.depaul.edu.se491.config.AppConfig;
 import com.mongodb.*;
 import com.mongodb.jee.MongoHolder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.Properties;
+import java.util.Set;
+
 import com.mongodb.util.JSON;
 
 /**
@@ -53,11 +56,19 @@ public class MongoDaoImpl implements MongoDao {
                 "_id", 1)).limit(Integer.parseInt(
                 prop.getProperty("app.mongo_query_limit")));
     }
+    
+    @Override
+    public DBCursor findCollection(String collection) {     
+    	 return db.getCollection(collection).find().sort(new BasicDBObject(
+                 "_id", -1)).limit(Integer.parseInt(
+                         prop.getProperty("app.mongo_query_limit100k")));
+    }
+
 
     @Override
     public DBObject findOne(String collection, String params) {
         return db.getCollection(collection).findOne(
-                ((BasicDBObject) JSON.parse(params)),
+                (BasicDBObject) JSON.parse(params),
                 new BasicDBObject("_id", false)
         );
     }
@@ -65,10 +76,20 @@ public class MongoDaoImpl implements MongoDao {
     @Override
     public DBCursor find(String collection, String params) {
         return db.getCollection(collection).find(
-                ((BasicDBObject) JSON.parse(params)),
+                (BasicDBObject) JSON.parse(params),
                 new BasicDBObject("_id", false)
         ).sort(new BasicDBObject(
                 "_id", 1)).limit(Integer.parseInt(
                 prop.getProperty("app.mongo_query_limit")));
+    }
+
+    @Override
+    public Set<String> getCollectionNames() {
+        return db.getCollectionNames();
+    }
+
+    @Override
+    public void setDB(DB db) {
+        this.db = db;
     }
 }

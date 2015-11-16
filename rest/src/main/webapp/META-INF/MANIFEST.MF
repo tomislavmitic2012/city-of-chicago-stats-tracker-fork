@@ -5,6 +5,6 @@ Built-By: tomislav
 Specification-Title: Socrata Chicago Data Application
 Implementation-Vendor-Id: com.depaul.edu.se491
 Created-By: Apache Maven 3.0.5
-Build-Jdk: 1.8.0_31
+Build-Jdk: 1.8.0_45
 Specification-Version: 1.0-SNAPSHOT
 

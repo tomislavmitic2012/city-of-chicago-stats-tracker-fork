@@ -24,11 +24,15 @@ var app_en = require('./app_en')['appen'];
 
 app = connect()
     .use(vhost(serverGlobals.vhost_en, app_en))
-    .use(vhost(serverGlobals.vhost_en2, app_en));
+    .use(vhost(serverGlobals.vhost_en2, app_en))
+    .use(vhost(serverGlobals.vhost_en3, app_en))
+    .use(vhost(serverGlobals.vhost_en4, app_en))
+    .use(vhost(serverGlobals.vhost_en5, app_en));
 
 var options = {
     key : fs.readFileSync('./ssl/key.pem')
     , cert : fs.readFileSync('./ssl/cert.pem')
+    , ca : fs.readFileSync('./ssl/ca.pem')
     , requestCert : true
     , rejectUnathorized : false
 };
@@ -38,7 +42,7 @@ http.createServer(function(req, res) {
     res.end();
 }).listen(portNumber, function () {
     console.log('tfx.cPortal.Web running on port ' + portNumber + '.')
-})
+});
 https.createServer(options, app).listen(sslPortNumber, function () {
     console.log('tfx.cPortal.Web running on port ' + sslPortNumber + '.')
 });

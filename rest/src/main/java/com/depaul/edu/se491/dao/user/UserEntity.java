@@ -57,7 +57,9 @@ public class UserEntity implements UserDetails {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<AlertQueriesEntity> alertQueries = new ArrayList<>();
 
-    public UserEntity() {}
+    public UserEntity() {
+
+    }
 
     public UserEntity(String firstName, String lastName, String email, Boolean enabled, String uuid, String password) {
         this.setFirstName(firstName);
@@ -74,6 +76,7 @@ public class UserEntity implements UserDetails {
             BeanUtils.copyProperties(this, user);
             this.password = AppConfig.ec.encode(this.password);
             this.createdDate = new Date();
+            this.enabled = user.isEnabled();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

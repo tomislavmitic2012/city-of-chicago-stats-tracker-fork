@@ -1,0 +1,14 @@
+Connecting to ec2_instance  node.js server:
+
+To access your instance:
+Locate your private key file (chicagostatstracker.pem). The wizard automatically detects the key you used to launch the instance.
+
+Your key must not be publicly viewable for SSH to work. Use this command if needed:
+chmod 400 chicagostatstracker.pem
+
+Connect to your instance using its Public IP:
+52.7.169.3
+
+Example:
+ssh -i chicagostatstracker.pem ec2-user@52.7.169.3
+

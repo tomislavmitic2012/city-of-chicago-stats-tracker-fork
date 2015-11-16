@@ -1,0 +1,111 @@
+I have created a method within utils.js which allw you to make multiple ajax requests
+at the same time. The first method is the auxilaryDeferred method:
+
+    function auxilaryDeferreds(resources, method) {
+        var headers = {};
+        headers[window.chicago_stats_globals.x_auth_token_key] = $.cookie(window.chicago_stats_globals.x_auth_token_cookie_key);
+        var defereds = [];
+        resources.forEach(function (resource) {
+            defereds.push($.ajax({
+                method : method
+                , url: [window.chicago_stats_globals.middleware_url, resource].join('')
+                , contentType: 'application/json; charset=UTF-8'
+                , headers : headers
+            }));
+        });
+        return defereds;
+    }
+
+    - The method takes an array of resources and the type of HTTP method that should
+      be executed on each resource, viable methods are GET, POST, PUT, DELETE
+    - The method iterates through the resources array and creates and returns an array of jQuery
+      ajax deferred objects
+
+The method above is used internally in the ajaxMultiGet method. The array of jQuery
+deferreds are passed to the $.when.all method which which is a wrapper method around
+the jQuery when method.
+
+    function ajaxMultiGet(resources, cbSuccess, cbFail) {
+        if ($.cookie(window.chicago_stats_globals.x_auth_token_cookie_key) != null) {
+            $.when.all(auxilaryDeferreds(resources, 'GET')).then(cbSuccess, cbFail)
+        } else {
+            applicationRedirect(window.chicago_stats_globals.app_paths.signin);
+        }
+    }
+
+    - the method takes the array of resources, and a success and fail callback function to be executed after
+      all jQuery ajax deferred objects have been executed.
+    - The wrapper method looks as follows:
+    
+    /** Extend jQuery with a when.all method **/
+    if ($.when.all===undefined) {
+        $.when.all = function(deferreds) {
+            var deferred = new $.Deferred();
+            $.when.apply($, deferreds).then(
+                function() {
+                    deferred.resolve(Array.prototype.slice.call(arguments));
+                },
+                function() {
+                    deferred.fail(Array.prototype.slice.call(arguments));
+                });
+
+            return deferred;
+        }
+    }
+
+    - In the above code we are wrapping the $.when method with the ability to return an
+      actual array of arguments within the success and fail callback methods and not the
+      pseudo arguments array which the $.when method would return
+
+To see an actual implementation of the ajaxMultiGet method see myDataViewModel.js:
+
+        function getAvailableDatasets() {
+            ajaxMultiGet.call(self,
+                [window.chicago_stats_globals.middleware_resources['mongo/getCollectionNames'],
+                    [window.chicago_stats_globals.middleware_resources
+                        ['favoriteDatasets/get_favoriteDatasetsList_by_Uuid'],
+                            ['uuid', $.cookie(window.chicago_stats_globals.uuid_cookie_key)].join('=')].join('?')],
+                function(data) {
+                    var filteredData = data[0][0].filter(function(val) {
+                        return val !== 'system.indexes';
+                    });
+                    filteredData.forEach(function(datum) {
+                        _availableDatasets.push(
+                            window.chicago_stats_globals.collection_info[datum])
+                    });
+                    _mydataViewModel['availableDatasets'] = mappping.fromJS(_availableDatasets);
+
+                    var favDataSets = data[1][0];
+                    if (favDataSets != 0) {
+                        favDataSets.forEach(function(datum) {
+                            var obj = {
+                                created_date : datum['created_date']
+                                , notes : datum['notes']
+                                , query : datum['query'].split('|')[1]
+                                , collection : datum['query'].split('|')[0]
+                                , no_data : false
+                            };
+                            _mydata.push(obj);
+                        });
+                    } else {
+                        _mydata.push({
+                            notes : window.chicago_stats_globals.NO_FAVORITE_DATASETS
+                            , no_data : true
+                        })
+                    }
+                    _mydataViewModel['myData'] = mappping.fromJS(_mydata)
+
+                    self.cleanAndApplyBindings(_mydataViewModel);
+                }, function(data) {
+                    console.log(data);
+                    showModal(window.chicago_stats_globals.GENERAL_MODAL_TITLE,
+                        [data[0][2]['status'], ': ' , data[0][2]['responseText']].join(''));
+                });
+        }
+
+        - The method above uses the ajaxMultiGet method to get the available collections we have in Mongo
+          as well as any favorite datasets that the user may have saved.
+        - We pass a success and fail callback as well which get passed a data array object with information about
+          the requests that were made
+        - Within the success callback we process the data that was provided from the middleware and create the viewmodel
+        - Within the fail callback we display a message with the error that came back from the server. 

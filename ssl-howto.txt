@@ -49,3 +49,13 @@
     127.0.0.1       middleware.chicagostatstracker.com
 
 You now have ssl configured in your project. Enjoy! Happy SSLing!
+
+--------------------------------------------------------------------------------
+
+Miscellanea:
+
+## remove passphrase from key ##
+openssl rsa -in server.key -out key.pem
+
+## Good guide on how to install Go Daddy Certs ##
+http://stackoverflow.com/questions/24269293/how-to-import-godaddy-certificates-in-tomcat-given-gd-bundle-g2-g1-crt-gdig2-cr?answertab=votes#tab-top

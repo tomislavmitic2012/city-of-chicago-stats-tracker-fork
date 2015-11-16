@@ -36,7 +36,9 @@ public class FavoriteDatasetsEntity {
     @Column(name = "created_date")
     private Date createdDate;
 
-    public FavoriteDatasetsEntity() {}
+    public FavoriteDatasetsEntity() {
+
+    }
     
     public FavoriteDatasetsEntity(FavoriteDatasets fde) {
         try {

@@ -33,7 +33,6 @@ public class FavoriteDatasetsResource {
             @QueryParam("id") Long id
 
     ) {
-
         List<FavoriteDatasets> fdeUserById = favoriteDatasetsService
                 .getFavoriteDatasetsByUserId(id);
 
@@ -46,11 +45,8 @@ public class FavoriteDatasetsResource {
     @Produces({MediaType.APPLICATION_JSON})
     public List<FavoriteDatasets> getFavoriteDatasetsByUserUuid(
             @QueryParam("uuid") String  uuid
-
     ) {
-
         List<FavoriteDatasets> fdeByUserUuid = favoriteDatasetsService.getFavoriteDatasetsByUserUuid(uuid);
-
         return fdeByUserUuid;
     }
     
@@ -73,7 +69,7 @@ public class FavoriteDatasetsResource {
     @Path("/update_favoriteDatasets")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.TEXT_HTML})
-    public Response FavoriteDatasets(FavoriteDatasets fde) throws AppException{
+    public Response favoriteDatasets(FavoriteDatasets fde) throws AppException{
 
         favoriteDatasetsService.updateFavoriteDatasets(fde);
 
@@ -82,18 +78,17 @@ public class FavoriteDatasetsResource {
                 .header("Access-Control-Allow-Headers", "X-extra-header")
             .build();
     }
-    
-    
+
     @POST
     @Path("/create_favoriteDatasets")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.TEXT_HTML})
     public Response createFavoriteDatasets(FavoriteDatasets fde) throws AppException {
         Long id = favoriteDatasetsService.createFavoriteDatasets(fde);
-        FavoriteDatasets c_fde = favoriteDatasetsService.getFavoriteDatasetsById(id);
+        FavoriteDatasets cFde = favoriteDatasetsService.getFavoriteDatasetsById(id);
 
         return Response.status(Response.Status.OK)
-                .entity("FavoriteDatasets " + c_fde.getId() + " was created.")
+                .entity("FavoriteDatasets " + cFde.getId() + " was created.")
                 .header("Access-Control-Allow-Headers", "X-extra-header")
                 .build();
     }

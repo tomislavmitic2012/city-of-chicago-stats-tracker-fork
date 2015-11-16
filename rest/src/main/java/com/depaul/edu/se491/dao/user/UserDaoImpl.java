@@ -44,7 +44,7 @@ public class UserDaoImpl implements UserDao {
             UserEntity u = qu.getSingleResult();
             u.getUserRoles();
             return u;
-        } catch (Throwable x) {
+        } catch (Exception x) {
             logger.error(String.format("Unable to get user with id %s. Underlying Exception: %s", id, x));
             return new UserEntity();
         }
@@ -59,7 +59,7 @@ public class UserDaoImpl implements UserDao {
             UserEntity u = qu.getSingleResult();
             u.getUserRoles();
             return u;
-        } catch (Throwable x) {
+        } catch (Exception x) {
             logger.error(String.format("Unable to get user with uuid %s. Underlying Exception: %s", uuid, x));
             return new UserEntity();
         }
@@ -74,7 +74,7 @@ public class UserDaoImpl implements UserDao {
             UserEntity u = qu.getSingleResult();
             u.getUserRoles();
             return u;
-        } catch (Throwable x) {
+        } catch (Exception x) {
             logger.error(String.format("Unable to get user with uuid %s. Underlying Exception: %s", email, x));
             return new UserEntity();
         }
@@ -94,8 +94,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     @Transactional
     public void disableAllUsers() {
-        List<UserEntity> u_s = this.getUsers(Boolean.TRUE);
-        u_s.stream().forEach((u) -> {
+        List<UserEntity> uS = this.getUsers(Boolean.TRUE);
+        uS.stream().forEach((u) -> {
             u.setEnabled(false);
             entityManager.merge(u);
         });
@@ -116,8 +116,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     @Transactional
     public void enableAllUsers() {
-        List<UserEntity> u_s = this.getUsers(Boolean.TRUE);
-        u_s.stream().forEach((u) -> {
+        List<UserEntity> uS = this.getUsers(Boolean.TRUE);
+        uS.stream().forEach((u) -> {
             u.setEnabled(true);
             entityManager.merge(u);
         });

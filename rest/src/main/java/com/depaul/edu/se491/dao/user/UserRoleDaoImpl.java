@@ -26,9 +26,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
             TypedQuery<UserRoleEntity> qu = entityManager.createQuery(q.toString(), UserRoleEntity.class);
 
             return qu.getResultList();
-        } catch (Throwable x) {
+        } catch (Exception x) {
             logger.error(String.format("Unable to get user roles for user with id %s. Underlying Exception: %s", id, x));
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public Long addUserRole(UserRoleEntity userRoleEntity) {
+        UserRoleEntity ure = entityManager.merge(userRoleEntity);
+        entityManager.flush();
+        return ure.getUser().getId();
     }
 }

@@ -44,13 +44,6 @@
     <bean id="alertQueriesDao" class="com.depaul.edu.se491.dao.alert.AlertQueriesDaoImpl"/>
     <bean id="mongoDao" class="com.depaul.edu.se491.dao.mongo.MongoDaoImpl"/>
 
-    <bean id="queryService" class="com.depaul.edu.se491.service.query.QueryServiceImpl">
-        <constructor-arg name="url" value="${app.socrata_url}"/>
-        <constructor-arg name="user" value="${app.socrata_username}"/>
-        <constructor-arg name="password" value="${app.socrata_password}"/>
-        <constructor-arg name="token" value="${app.socrata_app_token}"/>
-    </bean>
-
     <bean id="emailService" class="com.depaul.edu.se491.service.email.EmailServiceImpl">
         <constructor-arg name="applicationEmail" value="${app.email}"/>
         <constructor-arg name="applicationPassword" value="${app.email_password}"/>
@@ -61,13 +54,19 @@
     <bean id="userFavoriteDatasetsService" class="com.depaul.edu.se491.service.favorites.FavoriteDatasetsServiceImpl"/>
     <bean id="userAlertQueriesService" class="com.depaul.edu.se491.service.alert.AlertQueriesServiceImpl"/>
     <bean id="mongoService" class="com.depaul.edu.se491.service.mongo.MongoServiceImpl"/>
+    <bean id="alertRunnerService" class="com.depaul.edu.se491.service.alert.AlertRunnerServiceImpl">
+        <property name="userAlertQueriesService" ref="userAlertQueriesService"/>
+        <property name="mongoService" ref="mongoService"/>
+        <property name="emailService" ref="emailService"/>
+    </bean>
+    <bean id="chartStatsService" class="com.depaul.edu.se491.service.chart.ChartStatsServiceImpl"/>
 
-    <bean id="sodaResource" class="com.depaul.edu.se491.resource.soda.SodaResource"></bean>
     <bean id="alertResource" class="com.depaul.edu.se491.resource.alert.AlertResource"/>
     <bean id="userResource" class="com.depaul.edu.se491.resource.user.UserResource" />
     <bean id="favoritesResource" class="com.depaul.edu.se491.resource.favorites.FavoriteDatasetsResource" />
     <bean id="mongoResource" class="com.depaul.edu.se491.resource.mongo.MongoResource"/>
     <bean id="authenticateResource" class="com.depaul.edu.se491.resource.authenticate.AuthenticateResource"/>
+    <bean id="chartStatsResource" class="com.depaul.edu.se491.resource.chart.ChartStatsResource"/>
 
     <bean id="cityOfChicagoStatsDS" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>
@@ -82,6 +81,14 @@
     </bean>
 
     <bean id="unauthorizedEntryPoint" class="com.depaul.edu.se491.resource.UnauthorizedEntryPoint" />
+
+    <bean id="userDisabledEntryPoint" class="com.depaul.edu.se491.resource.UserDisabledEntryPoint" />
+
+    <bean id="userNotFoundEntryPoint" class="com.depaul.edu.se491.resource.UserNotFoundEntryPoint" />
+
+    <bean id="authenticationExceptionEntryPoint" class="com.depaul.edu.se491.resource.AuthenticationExceptionEntryPoint" />
+
+    <bean id="createAccountExceptionEntryPoint" class="com.depaul.edu.se491.resource.CreateAccountExceptionEntryPoint" />
 
     <bean id="authenticationTokenProcessingFilter" class="com.depaul.edu.se491.filters.AuthenticationTokenProcessingFilter">
         <constructor-arg ref="userDao" />

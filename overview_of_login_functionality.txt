@@ -1,0 +1,228 @@
+Node.js - app_en.js
+
+- The application has several routes defined within it which render different html pages based
+  on which route is hit.
+    * /dashboard -->  index.html
+    * /signin --> signIn.html
+    * /404 --> 404.html
+    * /createaccount --> createAccount.html
+    * /getpassword --> getPassword.html
+
+- based on these routes we define http gets within the application that people can hit if
+  they enter in the appropriate url. For example https://chicagostatstracker.com/dashboard
+  will hit the following function:
+  
+    app.get('/dashboard', function(req, res) {
+        res.render(routes[url.parse(req.url).pathname]);
+    });
+  
+  - All this function does is render the appropriate html file located in the routes table
+
+- All requests pass through a general middleware function which tests to make sure the route you
+  are trying to hit actually exists, if it does not you are redirected to a 404 page
+
+    app.use(function(req, res, next) {
+        if (routes[url.parse(req.url).pathname] != null) {
+            next();
+        } else {
+            res.render(routes['/404']);
+        }
+    });
+
+Front End - Sign In Page
+
+- When a user first comes to the /siginin route he or she must authenticate
+- Within signinViewModel.js two ko observables are defined, email and password which are
+  binded to the input fields on the signIn.html file
+- We also define a 'login' method within the viewmodel which takes care of authenticating
+  a user
+
+        self.login = function(viewmodel, e) {
+            e.preventDefault();
+            var p = new Parsley('#login_form');
+            if (p.validate()) {
+                loginUser(self.email(), self.password());
+            }
+            return false;
+        };
+
+- The 'login' method delegates to a util method called loginUser which takes the email and
+  password as arguments and attempts to authenticate a user
+- The loginUser method is located within utils.js
+
+        function loginUser(email, password) {
+            var data = {
+                username : email,
+                password : password
+            };
+            formPost(data, window.chicago_stats_globals.middleware_resources.authenticate, function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+                if (data['token']) {
+                    $.cookie(window.chicago_stats_globals.x_auth_token_cookie_key, data['token']);
+                    applicationRedirect(window.chicago_stats_globals.app_paths.dashboard);
+                } else {
+                    showModal(window.chicago_stats_globals.GENERAL_MODAL_TITLE,
+                        window.chicago_stats_globals.UNABLE_TO_CREATE_TOKEN_MESSAGE);
+                }
+            }, function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+                showModal(window.chicago_stats_globals.GENERAL_MODAL_TITLE,
+                    [data['status'], ': ' , xhr].join(''))
+            });
+        }
+
+- The login user method packages the email and password into a JSON object and passes it to a formPost method located within utils.js which based on the
+  JSON data, the middleware resource and two call back methods passed to it attempts to make a cross origin request to the java middleware and authenticate
+  the user
+
+        function formPost(data, resource, cbSuccess, cbFail) {
+            $.ajax({
+                method : 'POST',
+                url : [window.chicago_stats_globals.middleware_url, resource].join(''),
+                contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                data : data
+            }).done(function(data, textStatus, xhr) {
+                cbSuccess(data, textStatus, xhr);
+            }).fail(function(data, textStatus, xhr) {
+                cbFail(data, textStatus, xhr);
+            });
+        }
+
+- Which of the two callbacks is used depends on how the middleware responds
+    - on success the cbSuccess callback method is called which then sets as a cookie the token passed back from the middleware and then redirects the
+      user to /dashboard so that he she may use the application
+    - On fail the cbFail method is called which displays a modal to the user specifiying the message that was received from the middleware
+
+- the formPost method does an actual form post to the middleware since it specifies it's contentType as application/x-www-form-urlencoded
+
+- There is also an ajaxPost and ajaxGet method in utils.js but they consume the data as application/json, more information to come about those methods
+  when they will be acutally used.
+
+- Within main-main.js we check whether a user has a token and if he/she does does not we redirect back to the Sign In page, if they do have a token we
+  continue loading the functionality of the application
+
+    if ($.cookie(window.chicago_stats_globals.x_auth_token_cookie_key) == null) {
+        applicationRedirect(window.chicago_stats_globals.app_paths.signin);
+    } else {
+        domReady(function () {
+            // Logout functionality
+            initiateLogout();
+
+            // Call navigation scroll functions
+            new navigationScroll();
+
+            //display chart
+            new chartViewModel();
+
+            //load and add filter box
+            new filterViewModel();
+
+            //display my data set
+            new myDataViewModel();
+
+            //display overview table
+            new overviewViewModel();
+        });
+    }
+
+- If for whatever reason a user is redirected to the /singin route and thus back to the signin page we remove their token and they will have
+  to reauthenticate
+
+    if ($.cookie(window.chicago_stats_globals.x_auth_token_cookie_key)) {
+        $.removeCookie(window.chicago_stats_globals.x_auth_token_cookie_key);
+    }
+
+- The final thing I would mention is the initiateLogout method that is called in main-main.js and is located within utils.js
+
+    function initiateLogout() {
+        $('#logout').on('click', function(e) {
+            e.preventDefault();
+            if ($.cookie(window.chicago_stats_globals.x_auth_token_cookie_key)) {
+                $.removeCookie(window.chicago_stats_globals.x_auth_token_cookie_key);
+            }
+            applicationRedirect(window.chicago_stats_globals.app_paths.signin);
+            return false;
+        })
+    }
+
+- This method attaches a 'click' event handler to a link within index.html with an id of 'logout'
+- all this event handler does is removes the user's authentication token if he/she has one
+- and then it redirects back to the /signin page
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+4/18/2015
+
+Changes to loginUser method within utils.js
+
+- I added a getUserSecurityFunction within loginUser which takes the authentication resource endpoint, a success callback method as well as a fail callback method
+
+        function loginUser(email, password) {
+            var data = {
+                username : email,
+                password : password
+            };
+            formPost(data, window.chicago_stats_globals.middleware_resources.authenticate, function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+                if (data['token']) {
+                    $.cookie(window.chicago_stats_globals.x_auth_token_cookie_key, data['token']);
+                    getUserSecurityContext(window.chicago_stats_globals.middleware_resources.authenticate, function(data, textStatus, xhr) {
+                        console.log(data);
+                        console.log(textStatus);
+                        console.log(xhr);
+                        $.cookie(window.chicago_stats_globals.uuid_cookie_key, data['uuid']);
+                        $.cookie(window.chicago_stats_globals.roles_key, JSON.stringify(data['roles']));
+                        applicationRedirect(window.chicago_stats_globals.app_paths.dashboard);
+                    }, function(data, textStatus, xhr) {
+                        console.log(data);
+                        console.log(textStatus);
+                        console.log(xhr);
+                        showModal(window.chicago_stats_globals.GENERAL_MODAL_TITLE,
+                            window.chicago_stats_globals.UNABLE_TO_GET_USER_SECURITY_CONTEXT_MESSAGE);
+                    });
+                } else {
+                    showModal(window.chicago_stats_globals.GENERAL_MODAL_TITLE,
+                        window.chicago_stats_globals.UNABLE_TO_CREATE_TOKEN_MESSAGE);
+                }
+            }, function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+                showModal(window.chicago_stats_globals.GENERAL_MODAL_TITLE,
+                    [data['status'], ': ' , xhr].join(''))
+            });
+        }
+
+- The good part about asynchronous callbacks is you can nest them into as many levels as you need (the norm is up to 2 levels), this gives the appearance of synchronocity and you don't have to
+  fool around with event emitters which are bad mojo.
+
+- The getUserSecurityContext methods delegates to the ajaxGetNoData methods which takes a resource endpoint, a callback success and fail method
+
+        function ajaxGetNoData(resource, cbSuccess, cbFail) {
+            if ($.cookie(window.chicago_stats_globals.x_auth_token_cookie_key) != null) {
+                var headers = {};
+                headers[window.chicago_stats_globals.x_auth_token_key] = $.cookie(window.chicago_stats_globals.x_auth_token_cookie_key);
+                $.ajax({
+                    method: 'GET',
+                    url: [window.chicago_stats_globals.middleware_url, resource].join(''),
+                    contentType: 'application/json; charset=UTF-8',
+                    headers : headers
+                }).done(function (data, textStatus, xhr) {
+                    cbSuccess(data, textStatus, xhr);
+                }).fail(function (data, textStatus, xhr) {
+                    cbFail(data, textStatus, xhr);
+                });
+            } else {
+                applicationRedirect(window.chicago_stats_globals.app_paths.signin);
+            }
+        }
+
+    - The main thing to notice here is that we are passing the X-Auth-Token as a header in the ajax call
+
+- Once the security context has been correctly gotten we cookie the user's uuid and the user's roles

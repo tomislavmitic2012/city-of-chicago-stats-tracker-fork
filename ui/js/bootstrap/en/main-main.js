@@ -8,9 +8,6 @@ require.config({
         parsley: {
             deps: ['jquery']
         },
-        parsely_remote: {
-            deps: ['jquery', 'parsley']
-        },
         bootstrap: {
             deps: ['jquery']
         },
@@ -29,27 +26,27 @@ require.config({
         cookie: {
             deps: ['jquery']
         },
-        jqmobile: {
-            deps: ['jquery']
-        },
         knockout: {
             deps: ['jquery']
         },
         knockout_mapping: {
             deps: ['knockout','jquery']
+        },
+        utils : {
+            deps: ['jquery']
+        },
+        tableExport : {
+            deps: ['jquery']
         }
     },
-    paths: { 
+    paths: {
         jquery: 'libs/jquery',
-        jquery_metisMenu: 'libs/jquery.metisMenu',
-        jqmobile: 'libs/jquery.mobile',
         knockout: 'libs/knockout',
         knockout_mapping: 'libs/knockout.mapping',
         domReady: 'libs/domReady',
         cookie: 'libs/jquery.cookie',
         xdomain: 'libs/jquery.xdomainrequest',
         parsley: 'libs/parsley',
-        parsley_remote: 'libs/parsley.remote',
         bootstrap: 'libs/bootstrap',
         bootstraptable: 'libs/bootstrap-table',
         bootstraptable_en: 'libs/bootstrap-table-en-US',
@@ -61,13 +58,15 @@ require.config({
         html5shiv: 'libs/html5shiv',
         respond: 'libs/respond.min',
         text: 'libs/text',
+        globals : 'utils/globals',
         utils: 'utils/utils',
-        filterViewModel: 'libs/viewmodel/filterViewModel',
-        myDataViewModel:'libs/viewmodel/myDataViewModel',
-        overviewViewModel:'libs/viewmodel/overviewViewModel',
-        chartViewModel:'libs/viewmodel/chartViewModel',
-        navigationScroll:'libs/scripts/navigationScroll'
-       
+        tableExport: 'utils/tableExport.min',
+        filterViewModel: 'viewmodels/filterViewModel',
+        myDataViewModel: 'viewmodels/myDataViewModel',
+        overviewViewModel: 'viewmodels/overviewViewModel',
+        chartViewModel: 'viewmodels/chartViewModel',
+        myProfileViewModel: 'viewmodels/myProfileViewModel',
+        navigationScroll: 'utils/navigationScroll'
     }
 });
 
@@ -75,14 +74,12 @@ define(function (require) {
 
     var $ = require('jquery');
     var navigationScroll = require('navigationScroll');
-    var jqmobile = require('jqmobile');
     var cookie = require('cookie');
     var domReady = require('domReady');
     var ko = require('knockout');
     var koMap = require('knockout_mapping');
     var xdomain = require('xdomain');
     var parsley = require('parsley');
-    var parsley_remote = require('parsley_remote');
     var bowser = require('bowser');
     var bootstrap = require('bootstrap');
     var bootstraptable = require('bootstraptable');
@@ -92,11 +89,14 @@ define(function (require) {
     var moment = require('moment');
     var chart = require('chart');
     var text = require('text');
+    var globals = require('globals');
     var utils = require('utils');
+    var tableExport = require('tableExport');
     var myDataViewModel = require('myDataViewModel');
     var filterViewModel = require('filterViewModel');
     var overviewViewModel = require('overviewViewModel');
     var chartViewModel = require('chartViewModel');
+    var myProfileViewModel = require('myProfileViewModel');
     var html5shiv;
     var respond;
     if (bowser.msie && bowser.version < 9) {
@@ -104,25 +104,34 @@ define(function (require) {
         respond = require('respond')
     }
 
-    domReady(function () {
+    if ($.cookie(window.chicago_stats_globals.x_auth_token_cookie_key) == null) {
+        applicationRedirect(window.chicago_stats_globals.app_paths.signin);
+    } else {
+        domReady(function () {
+            // Check the authenitcation token
+            checkAuthenticationToken();
 
-        // Call navigation scroll functions
-        navigationScroll(); 
+            // Logout functionality
+            initiateLogout();
 
-        //display chart
-        chartViewModel();
+            // Call navigation scroll functions
+            new navigationScroll();
 
-        //load and add filter box
-        filterViewModel();
+            //display chart
+            window.chicago_stats_app['chartViewModel'] = new chartViewModel();
 
-        //display my data set
-        myDataViewModel();
+            //load and add filter box
+            window.chicago_stats_app['filterViewModel'] = new filterViewModel();
 
-        //display overview table
-        overviewViewModel();
-       
+            //display my data set
+            window.chicago_stats_app['myDataViewModel'] = new myDataViewModel();
 
-    });
-    
+            //display overview table
+            window.chicago_stats_app['overviewViewModel'] = new overviewViewModel();
+            
+            //display myProfile table
+            window.chicago_stats_app['myProfileViewModel'] = new myProfileViewModel();
+        });
+    }
 });
 

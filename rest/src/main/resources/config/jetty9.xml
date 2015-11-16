@@ -7,7 +7,8 @@
         <New class="org.postgresql.ds.PGSimpleDataSource">
            <Set name="User">tomislav</Set>
            <Set name="Password">mun1ak0t!</Set>
-           <Set name="ServerName">localhost</Set>
+           <!--<Set name="ServerName">localhost</Set>-->
+           <Set name="ServerName">city-of-chicago-stats-app.chyylhsnyagh.us-east-1.rds.amazonaws.com</Set>
            <Set name="PortNumber">5432</Set>
            <Set name="DatabaseName">city_of_chicago_stats_app</Set>
         </New>

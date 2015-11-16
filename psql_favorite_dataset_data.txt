@@ -1,0 +1,6 @@
+insert into favorite_datasets("user_id", "query", "notes") values
+            (7, 'crimes|{ description: { $in : [''DOMESTIC BATTERY SIMPLE'', ''POSS: CANNABIS 30GMS OR LESS'']}}', 'crimes data');
+insert into favorite_datasets("user_id", "query", "notes") values
+            (7, 'potholes|{street_address : '1200 S UNION AVE', type_of_service_request : 'Pothole in Street'}', 'potholes data');
+insert into favorite_datasets("user_id", "query", "notes") values (7, 'salaries|{job_titles : ''POLICE OFFICER''}', 'salaries data');
+insert into favorite_datasets("user_id", "query", "notes") values (7, 'foodinspections|{zip : 60656, results : ''Fail''}', 'food inspection data');

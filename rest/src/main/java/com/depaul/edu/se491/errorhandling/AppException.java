@@ -40,7 +40,9 @@ public class AppException extends Exception {
         this.link = link;
     }
 
-    public AppException() { }
+    public AppException() {
+
+    }
 
     public int getStatus() {
         return status;

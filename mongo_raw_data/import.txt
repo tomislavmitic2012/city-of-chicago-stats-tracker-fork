@@ -1,4 +1,16 @@
-mongoimport --db socrata --type csv --headerline --file crimes.csv
+mongoimport --db socrata --type JSON --headerline --file crimes.csv
 mongoimport --db socrata --type csv --headerline --file foodinspections.csv
 mongoimport --db socrata --type csv --headerline --file potholes.csv
 mongoimport --db socrata --type csv --headerline --file salaries.csv
+
+## CSV Location ##
+https://drive.google.com/open?id=0ByEioDFjH99MfnhZb29NOVR1ZUZNRlRiVEg1RzdKUko5Qk1GQWlZUW8xc254ODNfMDRRWHc&authuser=0
+
+mongoimport -db socrata --type json --file crimes.json --jsonArray
+
+mongoimport -db socrata --type json --file foodinspections.json --jsonArray
+
+mongoimport -db socrata --type json --file potholes.json --jsonArray
+
+mongoimport -db socrata --type json --file salaries.json --jsonArray
+

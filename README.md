@@ -109,3 +109,49 @@ I highly recommend using nvm to run node, follow the following instructions:
 	[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  
 	. ~/.nvm/nvm.sh  
 	alias sudo='sudo '
+
+
+Writing and Running Cucumber tests:
+
+Cucumber tests need to be written in conjunction with Gherkin documents. Gherkin documents are
+also known as feature files and are files that end in ".feature".
+
+Gherkin documents follow this basic syntax (can vary depending on the feature):
+Feature: "feature under test"
+    As a user
+    I want to "feature"
+    So that I can "purpose of feature"
+
+    Scenario: "A scenario in which the feature will be utilized"
+        Given: "Parameters that must be present in the system when I want to use this feature"
+        When: "I try to use this feature"
+        Then: "The result of implementing the feature"
+
+In order to run the cucumber tests you need a runner class and a steps class for each feature under test.
+
+The runner class must be annotated with @RunWith(Cucumber.class) and @CucumberOptions (see source code)
+
+The steps class has at least four methods (corresponding to the feature file)
+
+```java
+@Before
+setup() {}
+
+@Given("^The given line from the feature file$")
+public void the_given_line_from_the_feature_file() {}
+
+@When("^The when line from the feature file$")
+public void the_when_line_from_the_feature_file() {}
+
+@Then("^The then line from the feature file$")
+public void the_then_line_from_the_feature_file() {}
+```
+
+Running the tests:
+Running from the ide- simply find the given run class for the feature and run the class
+
+Running from Maven- mvn test -Dcucumber.options="--format json-pretty --glue classpath:cucumber/login.feature" **not tested**
+
+## Running the Quartz Daemons ##
+cd SocrataDaemons/daemon
+mvn exec:java -Dexec.mainClass="org.daemon.QuartzRunner"

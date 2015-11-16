@@ -11,10 +11,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>food_inspection_daemon</module>
-        <module>pothole_daemon</module>
-        <module>crime_daemon</module>
-        <module>employee_salary_daemon</module>
+        <module>daemon</module>
     </modules>
 
     <build>

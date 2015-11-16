@@ -6,183 +6,216 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ChicagoStatsTracker</title>
 <!-- Bootstrap -->
+<link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
 <link href="css/bootstrap.css" rel="stylesheet" />
 <link href="css/bootstrap-table.css" rel="stylesheet" />
 <link href="css/offcanvas.css" rel="stylesheet" />
 <link href="css/styles.css" rel="stylesheet" />
 <link href="css/font-awesome.css" rel="stylesheet" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed"
-					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
-					aria-controls="navbar">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
-				<div class="navbar-brand">Chicago Stat Tracker</div>
-			</div>
-			<div id="navbar" class="navbar-collapse collapse">
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="signin.html" class="fa fa-sign-out fa-3x"></a></li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-	<div class="container-fluid">
-		<!--1ST COLUMN-->
-		<div class="col-sm-3 col-md-2 sidebar">
-			<ul class="nav nav-sidebar">
-				<li><a href="#" class="scroll-link" data-id="myDataSet"><i
-						class="fa fa-database fa-3x"></i>myDataSet</a></li>
-				<li><a href="#" class="scroll-link" data-id="filterData"><i
-						class="fa fa-filter fa-3x"></i>FilterData</a></li>
-				<li><a href="#" class="scroll-link" data-id="overView"><i
-						class="fa fa-desktop fa-3x"></i>OverView</a></li>
-				<li><a href="#" class="scroll-link" data-id="chartView"><i
-						class="fa fa-bar-chart-o fa-3x"></i>Charts</a></li>
-				<li><a href="#" class="scroll-link" data-id="myProfile"><i
-						class="fa fa-user fa-3x"></i> myProfile </a></li>
-			</ul>
-		</div>
-		<!--2ND COLUMN-->
-		<div id="myDataSet" class="page-section">
-			<div class="container">
-				<div class="row">
-					<div
-						class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-						<table class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th>My Query Searches</th>
-									<th>Date</th>
-									<th>Description</th>
-								</tr>
-							</thead>
-							<tbody data-bind="foreach: myData">
-								<tr>
-									<td data-bind="text: id"></td>
-									<td data-bind="text: city"></td>
-									<td data-bind="text: date_last_confirmed"></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="filterData" class="page-section">
-		<div class="container">
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-				<form role="form">
-					<div class="form-group">
-						<div class="btn-group dropdown">
-							<select data-bind="options:datasetDropdown"></select>
-							
-						</div>
-					</div>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed"
+                        data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                        aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span> <span
+                            class="icon-bar"></span> <span class="icon-bar"></span> <span
+                            class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand">Chicago Stats Tracker</div>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a id="logout" href="#" class="fa fa-sign-out fa-3x"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <!--1ST COLUMN-->
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li><a href="#" class="scroll-link" data-id="myDataSet"><i
+                            class="fa fa-database fa-3x"></i>My Datasets</a></li>
+                    <li><a href="#" class="scroll-link" data-id="filterData"><i
+                            class="fa fa-filter fa-3x"></i>Filter Data</a></li>
+                    <li><a href="#" id="overviewNavLink" class="scroll-link" data-id="overView"><i
+                            class="fa fa-desktop fa-3x"></i>OverView</a></li>
+                    <li><a href="#" id="charViewNavLink" class="scroll-link" data-id="chartView"><i
+                            class="fa fa-bar-chart-o fa-3x"></i>Charts</a></li>
+                    <li><a href="#" class="scroll-link" data-id="myProfile"><i
+                            class="fa fa-user fa-3x"></i>My Profile</a></li>
+                </ul>
+            </div>
+            <!--2ND COLUMN-->
+            <div id="myDataSet" class="page-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#available_datasets" aria-controls="home" role="tab" data-toggle="tab">Available Datasets</a></li>
+                                <li role="presentation"><a href="#saved_searches" aria-controls="profile" role="tab" data-toggle="tab">Saved Datasets</a></li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade in active" id="available_datasets">
+                                    <div class="col-md-12 padTopBottom10">
+                                        <p>Welcome to Chicago Stats Tracker. Use this portal to track and save important stats
+                                            about the City of Chicago. We currently offer the following datasets listed below:</p>
+                                    </div>
+                                    <div class="col-md-12" data-bind="template: { name : 'collections_template', foreach: availableDatasets, as: 'dataset' }"></div>
+                                    <script type="text/html" id="collections_template">
+                                        <!-- ko if : $index() == 0 -->
+                                        <div class="clearfix"></div>
+                                        <!-- /ko -->
+                                        <div class="col-md-5 pull-left">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title"><a href="#" data-bind="text: dataset.title, attr : { 'data-resource' : dataset.resource }"></a></h3>
+                                                </div>
+                                                <div class="panel-body" data-bind="text: dataset.explanation"></div>
+                                            </div>
+                                        </div>
+                                        <!-- ko if : $index() == ($parent['availableDatasets']().length - 1) -->
+                                        <div class="clearfix"></div>
+                                        <!-- /ko -->
+                                    </script>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="saved_searches">
+                                    <table id="saved_searches_table"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="filterData" class="page-section">
+            <div class="container">
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <form role="form">
+                        <div class="form-group">
+                            <label><strong>1.</strong> Select a dataset to filter:</label>
+                            <div class="btn-group dropdown">
+                                <select data-bind="options: datasetDropdown, value: dataset, optionsCaption: 'Choose ...', event : { change : initializeSelectedDataset }"></select>
+                            </div>
+                        </div>
 
-					<div class="form-group">
-						<div data-bind="foreach: filterItem">
-							<div class="panel panel-default">
-								<span class="filter-close-icon"
-									data-bind="click: $parent.removeFilterLine"> <a
-									class="fa fa-times-circle-o fa-2x"></a></span>
-								<div class="form-inline">
-									<div class="form-group">
-										<select data-bind="options: $parent.filterDropdown"
-											class="form-control"></select>
-									</div>
-									<!-- /input-group -->
-									<div class="form-group">
-										<input type="text" class="form-control" aria-label="...">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+                        <div class="form-group">
+                            <label data-bind="if : filterItems().length > 0"><strong>2.</strong> Filter by data value:</label>
+                            <div data-bind="template : { name : 'filter_data_template', foreach : filterItems, as : 'filterItem' }"></div>
+                            <script type="text/html" id="filter_data_template">
+                                    <div class="panel panel-default">
+                                    <span class="filter-close-icon"
+                                          data-bind="click: $parent.removeFilterLine"> <a
+                                            class="fa fa-times-circle-o fa-2x"></a></span>
+                                        <div class="form-inline">
+                                            <div class="form-group">
+                                                <select data-bind="options: filterItem.filterDropdown, optionsValue: 'value', optionsText: 'text', value: filterItem.filterKey"
+                                                        class="form-control"></select>
+                                            </div>
+                                            <!-- /input-group -->
+                                            <div class="form-group">
+                                                <input type="text" data-bind="value: filterItem.filterValue" class="form-control" placeholder="Please enter value" aria-label="...">
+                                            </div>
+                                        </div>
+                                    </div>
+                            </script>
+                        </div>
 
-					<div class="form-group">
-						<button type="submit" class="btn btn-default"
-							data-bind="click: filterItemLine">Add New Filter</button>
-						<button type="submit" class="btn btn-default">Submit
-							Search</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+                        <div data-bind="if : filterItems().length > 0" class="form-group">
+                            <button type="submit" class="btn btn-default"
+                                data-bind="click: filterItemLine">Add New Filter</button>
+                            <button type="submit" data-bind="click: createDataSet" class="btn btn-default">Submit
+                                Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-	<div id="overView" class="page-section">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-					<div>
-						<table class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th>Beat</th>
-									<th>Arrest</th>
-									<th>Description</th>
-									<th>Block</th>
-								</tr>
-							</thead>
-							<tbody data-bind="foreach: crimes">
-								<tr>
-									<td data-bind="text: beat"></td>
-									<td data-bind="text: arrest"></td>
-									<td data-bind="text: _primary_decsription"></td>
-									<td data-bind="text: block"></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<div id="chartView" class="page-section">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-					<div class="panel panel-info">
-						<canvas id="myChart" width="900" height="700"></canvas>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div id="overView" class="page-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                        <div>
+                            <h3>Data Overview</h3>
+                            <div id="overview_alert" class="alert alert-warning alert-dismissible fade in" role="alert">
+                                <button type="button" class="close" dgitata-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <strong>Holy guacamole!</strong> You need to filter a data set to see an overview of it or choose a saved data set to view.
+                            </div>
+                            <table id="overView-table" data-show-export="true" data-search="true" ></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-	<div id="myProfile" class="page-section">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-					<h2>Profile</h2>
-					<form role="form">
-						<div class="form-group">
-							<label for="email">Email:</label> <input type="email"
-								class="form-control" id="email" placeholder="Enter email">
-						</div>
-						<div class="form-group">
-							<label for="pwd">Old Password:</label> <input type="password"
-								class="form-control" id="pwd" placeholder="Enter password">
-							<label for="pwd">New Password:</label> <input type="password"
-								class="form-control" id="pwd" placeholder="Enter password">
-						</div>
-						<button type="submit" class="btn btn-default">Save</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script data-main="js/bootstrap/main-main" src="js/libs/require.js"></script>
-</body>
+        <div id="chartView" class="page-section">
+            <div class="container">
+                <div class="row">               
+                    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                     	<div>
+                            <label>Select a dataset to display:</label>
+                            <div class="btn-group dropdown">
+                                <select data-bind="options: datasetDropdowns, value: dataset, selectedOptions: crimesdataSet, event : { change : initializeSelectedDatasets }"></select>
+                            </div>
+                        </div>
+                        <div class="panel panel-info">
+                            <canvas id="myChart" width="980" height="700"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="myProfile" class="page-section">
+            <div id="profile" class="container">
+                <div class="row">
+                    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                        <h2>Edit Profile</h2>
+                        <form role="form" id="profile_form">
+                            <div class="form-group">                            
+                                <label for="email">Email:</label> 
+                                	<input type="email" class="form-control" data-bind ="value: email" placeholder="Enter email" required>
+                                	<label >First Name:</label> 
+                                	<input type="text" class="form-control" data-bind ="value: firstName" placeholder="First Name" required>
+                                	<label >Last Name:</label> 
+                                	<input  type="text" class="form-control" data-bind ="value: lastName" placeholder="Last Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Old Password</label>
+                                <input type="password" id="inputPassword" data-bind="value : pwdOld" class="form-control" placeholder="Enter Password" required />
+                                <label>New Password:</label>
+                                <input type="password" class="form-control" data-bind="value: pwdNew" placeholder="Enter password" required>
+                            </div>
+                            <button type="submit" class="btn btn-default" data-bind="click: save_changes">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script data-main="js/bootstrap/main-main" src="js/libs/require.js"></script>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 id="modal_title" class="modal-title"></h4>
+                    </div>
+                    <div id="modal_body" class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

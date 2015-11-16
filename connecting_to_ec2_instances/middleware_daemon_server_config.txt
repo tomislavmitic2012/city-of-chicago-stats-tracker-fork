@@ -1,0 +1,14 @@
+Connecting to the middleware server:
+
+Using the citychicagostats.pem file, ssh into the ec2 instance.
+
+ssh -i citychicagostats.pem ec2-user@52.7.50.96
+
+You will be provided root access upon login.
+
+Connecting to the daemon ec2 instance:
+
+Using the citychicagostats.pem file, ssh into the instance.
+
+ssh -i citychicagostats.pem ec2-user@54.152.17.176
+

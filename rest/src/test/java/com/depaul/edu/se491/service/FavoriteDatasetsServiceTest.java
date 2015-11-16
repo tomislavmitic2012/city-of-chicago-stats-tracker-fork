@@ -1,8 +1,10 @@
 package com.depaul.edu.se491.service;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.depaul.edu.se491.dao.user.UserEntity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,6 +23,9 @@ import com.depaul.edu.se491.errorhandling.AppException;
 import com.depaul.edu.se491.resource.favorites.FavoriteDatasets;
 import com.depaul.edu.se491.service.favorites.FavoriteDatasetsService;
 import com.depaul.edu.se491.service.favorites.FavoriteDatasetsServiceImpl;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FavoriteDatasetsServiceTest {
@@ -28,6 +33,7 @@ public class FavoriteDatasetsServiceTest {
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 
+	private static final Long FDE_ID = Long.valueOf(1);
 	private static final Long USER_ID = Long.valueOf(1);
 	private static final String UUID = "12sdf13";
 	private static final String USER_QUERY = "select";
@@ -41,8 +47,10 @@ public class FavoriteDatasetsServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		fdeService = new FavoriteDatasetsServiceImpl();
-		;
 		fdeService.setFavoriteDatasetsDao(mockFdeDao);
+		UserEntity u = new UserEntity();
+		Authentication a = new UsernamePasswordAuthenticationToken(u, null);
+		SecurityContextHolder.getContext().setAuthentication(a);
 	}
 
 	@Test
@@ -69,7 +77,6 @@ public class FavoriteDatasetsServiceTest {
 
 	@Test
 	public void testGetFavoriteDatasetsByUuId_successful() throws AppException {
-
 		FavoriteDatasetsEntity fdeEntity = new FavoriteDatasetsEntity();
 		List<FavoriteDatasetsEntity> fdeEntityList = new LinkedList<>();
 		fdeEntityList.add(fdeEntity);
@@ -86,7 +93,6 @@ public class FavoriteDatasetsServiceTest {
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
-
 	}
 
 	@Test
@@ -149,17 +155,14 @@ public class FavoriteDatasetsServiceTest {
 			verify(mockFdeDao).getFavoriteDatasetsById(USER_ID);
 			Assert.assertEquals(e.getCode(), 409);
 		}
-
 	}
 
 	@Test
 	public void testCreateFavoriteDataset() throws AppException {
-
 		when(mockFdeDao.getFavoriteDatasetsById(USER_ID)).thenReturn(null);
-		when(
-				mockFdeDao
-						.createFavoriteDatasets(any(FavoriteDatasetsEntity.class)))
-				.thenReturn(USER_ID);
+		doReturn(FDE_ID).when(mockFdeDao)
+				.createFavoriteDatasets(any(FavoriteDatasetsEntity.class));
+		doReturn(new FavoriteDatasetsEntity()).when(mockFdeDao).getFavoriteDatasetsById(1L);
 
 		FavoriteDatasets fde = new FavoriteDatasets();
 		fde.setId(Long.valueOf(1));
@@ -176,31 +179,25 @@ public class FavoriteDatasetsServiceTest {
 				any(FavoriteDatasetsEntity.class));
 
 		Assert.assertSame(Long.valueOf(1), createFavoriteDataset);
-
 	}
 
 	@Test
 	public void testCreateFavoriteDataset_missingNotes() throws AppException {
-
 		exception.expect(AppException.class);
 		exception.expectMessage("Provided data not sufficient for insertion");
 
 		FavoriteDatasets fde = new FavoriteDatasets();
 		fde.setNotes(null);
 		fdeService.createFavoriteDatasets(fde);
-
 	}
 
 	@Test
 	public void testCreateFavoriteDataset_missingQuery() throws AppException {
-
 		exception.expect(AppException.class);
 		exception.expectMessage("Provided data not sufficient for insertion");
 
 		FavoriteDatasets fde = new FavoriteDatasets();
 		fde.setQuery(null);
 		fdeService.createFavoriteDatasets(fde);
-
 	}
-
 }

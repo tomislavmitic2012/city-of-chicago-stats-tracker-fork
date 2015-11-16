@@ -13,6 +13,8 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import com.depaul.edu.se491.dao.favorites.FavoriteDatasetsEntity;
 import com.depaul.edu.se491.dao.user.UserEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -22,7 +24,6 @@ import com.depaul.edu.se491.dao.user.UserEntity;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FavoriteDatasets implements Serializable {
-	
 
     @XmlElement(name = "id")
     private Long id;
@@ -39,14 +40,18 @@ public class FavoriteDatasets implements Serializable {
     @XmlElement(name = "created_date")
     private Date createdDate;
 
+    private static final Logger logger = LoggerFactory.getLogger(FavoriteDatasets.class);
+
     
     public FavoriteDatasets(FavoriteDatasetsEntity favoriteDatasetsEntity) {
         try {
             BeanUtils.copyProperties(this, favoriteDatasetsEntity);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("InvocationTargetException", e);
+
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException", e);
+
         }
     }
 
@@ -58,7 +63,9 @@ public class FavoriteDatasets implements Serializable {
     }
 
 
-    public FavoriteDatasets() {}
+    public FavoriteDatasets() {
+
+    }
 
     public Long getId() {
         return id;
@@ -68,11 +75,11 @@ public class FavoriteDatasets implements Serializable {
         this.id = id;
     }
 
-    public UserEntity getuser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void UserEntity(UserEntity user) {
+    public void setUserEntity(UserEntity user) {
         this.user = user;
     }
 

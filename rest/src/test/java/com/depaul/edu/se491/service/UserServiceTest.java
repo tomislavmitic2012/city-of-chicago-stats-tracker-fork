@@ -47,6 +47,10 @@ public class UserServiceTest {
 
     @Test
     public void testCreateUser() throws AppException {
+        UserEntity existingUser = new UserEntity();
+        when(userDao.getUserByEmail(USER_EMAIL)).thenReturn(existingUser);
+        when(userDao.getUserByUuid(USER_UUID)).thenReturn(existingUser);
+
         when(userDao.getUserById(Long.valueOf(1))).thenReturn(null);
         when(userDao.createUser(any(UserEntity.class))).thenReturn(Long.valueOf(1));
 
@@ -70,13 +74,14 @@ public class UserServiceTest {
         verify(userDao, times(1)).createUser(any(UserEntity.class));
 
 
-        Assert.assertSame(Long.valueOf(1), createUser); //ensure that the podcast was created with id of 1
+        Assert.assertSame(Long.valueOf(1), createUser);
     }
 
     @Test(expected=AppException.class)
     public void testCreateUserError() throws AppException {
         UserEntity existingUser = new UserEntity();
         when(userDao.getUserByEmail(USER_EMAIL)).thenReturn(existingUser);
+        when(userDao.getUserByUuid(USER_UUID)).thenReturn(existingUser);
 
         User user = new User();
         user.setUuid(USER_UUID);
@@ -91,11 +96,26 @@ public class UserServiceTest {
         exception.expect(AppException.class);
         exception.expectMessage("Provided data not sufficient for insertion");
 
+        UserEntity userEntity1 = new UserEntity();
+        userEntity1.setUuid(USER_UUID);
+        userEntity1.setEnabled(true);
+        userEntity1.setEmail(USER_EMAIL);
+
+        UserEntity userEntity2 = new UserEntity();
+        userEntity2.setUuid(USER_UUID);
+        userEntity2.setEnabled(true);
+        userEntity2.setEmail(USER_EMAIL);
+
+
+        when(userDao.getUserByUuid(USER_UUID)).thenReturn(userEntity1);
+        when(userDao.getUserByEmail(USER_EMAIL)).thenReturn(userEntity2);
+
         User user = new User();
 
         user.setUuid(USER_UUID);
         user.setFirstName(USER_FIRST_NAME);
         user.setPassword(USER_PASSWORD);
+        user.setEmail(USER_EMAIL);
 
         userService.createUser(user);
 
@@ -105,6 +125,19 @@ public class UserServiceTest {
     public void testCreateUserWithValidation_missingPassword() throws AppException {
         exception.expect(AppException.class);
         exception.expectMessage("Provided data not sufficient for insertion");
+
+        UserEntity userEntity1 = new UserEntity();
+        userEntity1.setUuid(USER_UUID);
+        userEntity1.setEnabled(true);
+        userEntity1.setEmail(USER_EMAIL);
+
+        UserEntity userEntity2 = new UserEntity();
+        userEntity2.setUuid(USER_UUID);
+        userEntity2.setEnabled(true);
+        userEntity2.setEmail(USER_EMAIL);
+
+        when(userDao.getUserByUuid(USER_UUID)).thenReturn(userEntity1);
+        when(userDao.getUserByEmail(USER_EMAIL)).thenReturn(userEntity2);
 
         User user = new User();
 
@@ -121,6 +154,19 @@ public class UserServiceTest {
         exception.expect(AppException.class);
         exception.expectMessage("Provided data not sufficient for insertion");
 
+        UserEntity userEntity1 = new UserEntity();
+        userEntity1.setUuid(USER_UUID);
+        userEntity1.setEnabled(true);
+        userEntity1.setEmail(USER_EMAIL);
+
+        UserEntity userEntity2 = new UserEntity();
+        userEntity2.setUuid(USER_UUID);
+        userEntity2.setEnabled(true);
+        userEntity2.setEmail(USER_EMAIL);
+
+        when(userDao.getUserByUuid(USER_UUID)).thenReturn(userEntity1);
+        when(userDao.getUserByEmail(USER_EMAIL)).thenReturn(userEntity2);
+
         User user = new User();
 
         user.setUuid(USER_UUID);
@@ -136,8 +182,21 @@ public class UserServiceTest {
         exception.expect(AppException.class);
         exception.expectMessage("Provided data not sufficient for insertion");
 
-        User user = new User();
+        UserEntity userEntity1 = new UserEntity();
+        userEntity1.setUuid(USER_UUID);
+        userEntity1.setEnabled(true);
+        userEntity1.setEmail(USER_EMAIL);
 
+        UserEntity userEntity2 = new UserEntity();
+        userEntity2.setUuid(USER_UUID);
+        userEntity2.setEnabled(true);
+        userEntity2.setEmail(USER_EMAIL);
+
+        when(userDao.getUserByUuid(USER_UUID)).thenReturn(userEntity1);
+        when(userDao.getUserByEmail(USER_EMAIL)).thenReturn(userEntity2);
+
+        User user = new User();
+        user.setUuid(USER_UUID);
         user.setPassword(USER_PASSWORD);
         user.setFirstName(USER_FIRST_NAME);
         user.setEmail(USER_EMAIL);

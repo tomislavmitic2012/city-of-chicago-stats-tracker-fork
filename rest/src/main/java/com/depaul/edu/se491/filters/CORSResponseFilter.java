@@ -1,5 +1,8 @@
 package com.depaul.edu.se491.filters;
 
+import com.depaul.edu.se491.config.AppConfig;
+import com.depaul.edu.se491.global.AppConstants;
+
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -18,9 +21,8 @@ public class CORSResponseFilter implements ContainerResponseFilter {
 
         MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 
-        headers.add("Access-Control-Allow-Origin", "*");
-        //headers.add("Access-Control-Allow-Origin", "http://podcastpedia.org"); //allows CORS requests only coming from podcastpedia.org
-        headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
-        headers.add("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, X-ChicagoStatsTracker");
+        headers.add(AppConstants.ACCESS_CONTROL_ALLOW_ORIGIN_KEY, AppConfig.getReferer(requestContext));
+        headers.add(AppConstants.ACCESS_CONTROL_ALLOW_METHODS_KEY, AppConstants.ACCESS_CONTROL_ALLOW_METHODS_VALUE);
+        headers.add(AppConstants.ACCESS_CONTROL_ALLOW_HEADERS_KEY, AppConstants.ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
     }
 }

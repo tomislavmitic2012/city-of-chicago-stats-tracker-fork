@@ -13,6 +13,8 @@ import com.depaul.edu.se491.dao.user.UserEntity;
 import com.depaul.edu.se491.errorhandling.AppException;
 import com.depaul.edu.se491.resource.favorites.FavoriteDatasets;
 import com.depaul.edu.se491.resource.user.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Created by Tu Vo on 2/26/15.
@@ -42,41 +44,40 @@ public class FavoriteDatasetsServiceImpl implements FavoriteDatasetsService {
         return favoriteDatasets;
     }
 
-	@Override
-	public void updateFavoriteDatasets(FavoriteDatasets fde)throws AppException {
-		if (favoriteDatasetDao.getFavoriteDatasetsById(fde.getId()) != null) {
-
-			favoriteDatasetDao.updateFavoriteDatasets(getEnityfromFde(fde));
-		}
-		else{
-		    //If user doesn't exist in database, do something else
+    @Override
+    public void updateFavoriteDatasets(FavoriteDatasets fde)throws AppException {
+        if (favoriteDatasetDao.getFavoriteDatasetsById(fde.getId()) != null) {
+            favoriteDatasetDao.updateFavoriteDatasets(getEnityfromFde(fde));
+        }else{
+            //If user doesn't exist in database, do something else
             throw new AppException(Response.Status.NOT_FOUND.getStatusCode(), 409, "FavoriteDatasets doesn't exist",
                     "Please verify that FavoriteDatasets exists.", "/updatepage");
-		}
-	}
+        }
+    }
 
-	@Override
-	public Long createFavoriteDatasets(FavoriteDatasets fde)throws AppException {
-		
-		validateInputForCreation(fde);
-		
-		FavoriteDatasetsEntity fdeEntity = getEnityfromFde(fde);
-		fdeEntity = favoriteDatasetDao.getFavoriteDatasetsById(fdeEntity.getId());
+    @Override
+    public Long createFavoriteDatasets(FavoriteDatasets fde)throws AppException {
 
-		if (fdeEntity != null) {
+        validateInputForCreation(fde);
+        insertUserId(fde);
 
-			throw new AppException(Response.Status.CONFLICT.getStatusCode(),409,"favoriteDataset already exists",
-					"Please verify that the favoriteDataset does not already exist.",
-					"/loginpage");
-		}
-		
-		FavoriteDatasetsEntity entity = new FavoriteDatasetsEntity(fde);
-		Long id = favoriteDatasetDao.createFavoriteDatasets(entity);
-		
-		return id;
-	}
-	private void validateInputForCreation(FavoriteDatasets fdeEntity) throws AppException {
+        FavoriteDatasetsEntity fdeEntity = getEnityfromFde(fde);
+        fdeEntity = favoriteDatasetDao.getFavoriteDatasetsById(fdeEntity.getId());
 
+        if (isFDEEntityEmpty(fdeEntity)) {
+
+            throw new AppException(Response.Status.CONFLICT.getStatusCode(),409,"favoriteDataset already exists",
+                    "Please verify that the favoriteDataset does not already exist.",
+                    "/loginpage");
+        }
+
+        FavoriteDatasetsEntity entity = new FavoriteDatasetsEntity(fde);
+        Long id = favoriteDatasetDao.createFavoriteDatasets(entity);
+
+        return id;
+    }
+
+    private void validateInputForCreation(FavoriteDatasets fdeEntity) throws AppException {
         if(fdeEntity.getNotes() == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), 400, "Provided data not sufficient for insertion",
                     "Please verify that the Notes is properly generated/set", "/loginpage");
@@ -88,11 +89,21 @@ public class FavoriteDatasetsServiceImpl implements FavoriteDatasetsService {
         
     }
 
-	@Override
-	public void setFavoriteDatasetsDao(FavoriteDatasetsDao fdeDao) {
-		this.favoriteDatasetDao = fdeDao;
-	}
-    
+    private boolean isFDEEntityEmpty(FavoriteDatasetsEntity fde) {
+        return fde.getId() != null && fde.getCreatedDate() != null &&
+                fde.getNotes() != null && fde.getQuery() != null &&
+                fde.getUser() != null;
+    }
+
+    private void insertUserId(FavoriteDatasets fdeEntity) {
+        Authentication securityAuth = SecurityContextHolder.getContext().getAuthentication();
+        fdeEntity.setUserEntity((UserEntity) securityAuth.getPrincipal());
+    }
+
+    @Override
+    public void setFavoriteDatasetsDao(FavoriteDatasetsDao fdeDao) {
+        this.favoriteDatasetDao = fdeDao;
+    }
 
     //Private method to marshal FavoriteDatasetsEntity  list into FavoriteDatasets list
     private List<FavoriteDatasets> getFavoriteDatasetsFromEntities(List<FavoriteDatasetsEntity> favoriteDatasetsEntities) {

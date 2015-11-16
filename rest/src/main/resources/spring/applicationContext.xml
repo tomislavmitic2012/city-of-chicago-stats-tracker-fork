@@ -38,13 +38,6 @@
     <bean id="alertQueriesDao" class="com.depaul.edu.se491.dao.alert.AlertQueriesDaoImpl"/>
     <bean id="mongoDao" class="com.depaul.edu.se491.dao.mongo.MongoDaoImpl"/>
 
-    <bean id="queryService" class="com.depaul.edu.se491.service.query.QueryServiceImpl">
-        <constructor-arg name="url" value="${app.socrata_url}"/>
-        <constructor-arg name="user" value="${app.socrata_username}"/>
-        <constructor-arg name="password" value="${app.socrata_password}"/>
-        <constructor-arg name="token" value="${app.socrata_app_token}"/>
-    </bean>
-
     <bean id="emailService" class="com.depaul.edu.se491.service.email.EmailServiceImpl">
         <constructor-arg name="applicationEmail" value="${app.email}"/>
         <constructor-arg name="applicationPassword" value="${app.email_password}"/>
@@ -60,31 +53,21 @@
         <property name="mongoService" ref="mongoService"/>
         <property name="emailService" ref="emailService"/>
     </bean>
+    <bean id="chartStatsService" class="com.depaul.edu.se491.service.chart.ChartStatsServiceImpl"/>
+    
 
-    <bean id="sodaResource" class="com.depaul.edu.se491.resource.soda.SodaResource"></bean>
+
     <bean id="alertResource" class="com.depaul.edu.se491.resource.alert.AlertResource"/>
     <bean id="userResource" class="com.depaul.edu.se491.resource.user.UserResource" />
     <bean id="favoritesResource" class="com.depaul.edu.se491.resource.favorites.FavoriteDatasetsResource" />
     <bean id="mongoResource" class="com.depaul.edu.se491.resource.mongo.MongoResource"/>
     <bean id="authenticateResource" class="com.depaul.edu.se491.resource.authenticate.AuthenticateResource"/>
-
+    <bean id="chartStatsResource" class="com.depaul.edu.se491.resource.chart.ChartStatsResource"/>
+    
     <bean id="cityOfChicagoStatsDS" class="org.springframework.jndi.JndiObjectFactoryBean" scope="singleton">
         <property name="jndiName" value="java:comp/env/jdbc/restChicagoStatsDB" />
         <property name="resourceRef" value="true" />
     </bean>
-
-    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
-        <!--<property name="driverClassName" value="org.postgresql.Driver"/>-->
-        <!--<property name="url" value="${app.postgres_uri}"/>-->
-        <!--<property name="username" value="${app.postgres_username}"/>-->
-        <!--<property name="password" value="${app.postgres_password}"/>-->
-    <!--</bean>-->
-
-    <!--<bean id="customJdbcDaoImpl" class="com.depaul.edu.se491.dao.CustomJdbcDaoImpl">-->
-        <!--<property name="dataSource" ref="dataSource"/>-->
-        <!--<property name="usersByUsernameQuery" value="select id,password, enabled from users where email=?"/>-->
-        <!--<property name="authoritiesByUsernameQuery" value="select user_id, role from user_roles where user_id=?"/>-->
-    <!--</bean>-->
 
     <!-- SPRING SECURITY SETUP -->
     <bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder">
@@ -93,7 +76,16 @@
 
     <bean id="unauthorizedEntryPoint" class="com.depaul.edu.se491.resource.UnauthorizedEntryPoint" />
 
+    <bean id="userDisabledEntryPoint" class="com.depaul.edu.se491.resource.UserDisabledEntryPoint" />
+
+    <bean id="userNotFoundEntryPoint" class="com.depaul.edu.se491.resource.UserNotFoundEntryPoint" />
+
+    <bean id="authenticationExceptionEntryPoint" class="com.depaul.edu.se491.resource.AuthenticationExceptionEntryPoint" />
+
+    <bean id="createAccountExceptionEntryPoint" class="com.depaul.edu.se491.resource.CreateAccountExceptionEntryPoint" />
+
     <bean id="authenticationTokenProcessingFilter" class="com.depaul.edu.se491.filters.AuthenticationTokenProcessingFilter">
         <constructor-arg ref="userDao" />
     </bean>
+        
 </beans>

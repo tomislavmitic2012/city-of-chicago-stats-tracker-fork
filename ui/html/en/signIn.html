@@ -6,38 +6,50 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>ChicagoStatsTracker</title>
       <!-- Bootstrap -->
+      <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
       <link href="css/bootstrap.css" rel="stylesheet" />
       <link href="css/offcanvas.css" rel="stylesheet" />
       <link href="css/styles.css" rel="stylesheet" />
       <link href="css/font-awesome.css" rel="stylesheet" />
    </head>
    <body>
-      <div class="container">
-         <form class="form-signin">
-            <h2 class="text-center">Facebook</h2>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+      <div id="login" class="container">
+         <form id="login_form" class="form-signin">
+            <h2 class="text-center">Sign In</h2>
             <label for="inputEmail" class="sr-only">Email address</label>
+            <input type="email" id="inputEmail" data-bind="value : email" class="form-control" placeholder="Email address" required autofocus />
             <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-            <p class="text-center"> -- or -- </p>
-            <label for="inputEmail" class="sr-only">Email address</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-            <label for="inputPassword" class="sr-only">Password</label>
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-            <div class="text-center"">
+            <input type="password" id="inputPassword" data-bind="value : password" class="form-control" placeholder="Password" required />
+            <div class="text-center">
                <label class="text-center">
-               <a > Create new account</a>
+               <a href="/createaccount">Create new account</a>
                </label>
                <label class="text-center">
-               <a > / Forgot Password</a>
+               &nbsp;/&nbsp;<a href="/getpassword">Forgot Password</a>
                </label>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            <button class="btn btn-lg btn-primary btn-block" data-bind="click : login">Sign in</button>
          </form>
       </div>
       <!-- /container -->
       <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
       <!-- Include all compiled plugins (below), or include individual files as needed -->
-      <script data-main="js/bootstrap/en/main-main" src="js/libs/require.js"></script>
+      <script data-main="js/bootstrap/signin-main" src="js/libs/require.js"></script>
+
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 id="modal_title" class="modal-title"></h4>
+                  </div>
+                  <div id="modal_body" class="modal-body"></div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+              </div>
+          </div>
+      </div>
    </body>
 </html>

@@ -40,6 +40,7 @@ drop table if exists alert_queries;
 create table alert_queries(
         "id" bigint not null,
         "user_id" bigint not null,
+        "collection" text,
         "query" text,
         "notes" text,
         "startdate" timestamp without time zone not null,
@@ -50,8 +51,8 @@ create table alert_queries(
     foreign key ("user_id") references users("id")
 );
 
-insert into alert_queries("id", "user_id", "query", "notes", "startdate", "enddate", "enabled", "interval") values
-                         (1, 1, 'https://soda.demo.socrata.com/resource/4tka-6guv?$where=magnitude > 3.0&source=pr',
+insert into alert_queries("id", "user_id", "collection", "query", "notes", "startdate", "enddate", "enabled", "interval") values
+                         (1, 1, 'food_inspections', 'https://soda.demo.socrata.com/resource/4tka-6guv?$where=magnitude > 3.0&source=pr',
                          'SOQL query example', '02/11/2015', '02/13/2015', true, 100000);
 
 drop table if exists favorite_datasets;

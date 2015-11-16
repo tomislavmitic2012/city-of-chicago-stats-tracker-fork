@@ -7,6 +7,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.container.ContainerRequestContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
@@ -23,6 +25,10 @@ public class AppConfig {
 
     private static final Properties prop = new Properties();
 
+    private AppConfig() {
+
+    }
+
     static {
         InputStream in = AppConfig.class.getClassLoader().getResourceAsStream("app.properties");
         try {
@@ -38,4 +44,14 @@ public class AppConfig {
     }
 
     public static final StandardPasswordEncoder ec = new StandardPasswordEncoder(prop.getProperty("app.secret"));
+
+    public static String getReferer(ContainerRequestContext requestContext) {
+        String[] refererArr = requestContext.getHeaders().get("Origin").get(0).split("/");
+        return String.format("%s//%s", refererArr[0], refererArr[2]);
+    }
+
+    public static String getReferer(HttpServletRequest httpServletRequest) {
+        String[] refererArr = httpServletRequest.getHeader("Origin").split("/");
+        return String.format("%s//%s", refererArr[0], refererArr[2]);
+    }
 }

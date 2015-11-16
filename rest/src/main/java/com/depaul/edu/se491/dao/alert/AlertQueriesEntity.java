@@ -26,6 +26,9 @@ public class AlertQueriesEntity {
     @Column(name = "query")
     private String query;
 
+    @Column(name = "collection")
+    private String collection;
+
     @Column(name = "notes")
     private String notes;
 
@@ -67,6 +70,14 @@ public class AlertQueriesEntity {
 
     public String getNotes() {
         return notes;
+    }
+
+    public String getCollection() {
+        return collection;
+    }
+
+    public void setCollection(String collection) {
+        this.collection = collection;
     }
 
     public void setNotes(String notes) {

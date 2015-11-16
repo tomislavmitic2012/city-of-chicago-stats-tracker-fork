@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.depaul.edu.se491</groupId>
+    <artifactId>socrata_chicago_data_access_front_end</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Socrata Chicago Data Application Front End</name>
+    <description>Socrata Chicago Data Front End</description>
+
+    <build>
+        <plugins>
+            <!-- use the plugin to build front-end, mvn antrun:run -->
+            <plugin>
+	      <artifactId>maven-antrun-plugin</artifactId>
+	      <version>1.7</version>			
+	      <configuration>
+		<target name="building">
+		  <echo>
+		    <!-- NPM INSTALL -->
+		    Executing npm install
+		  </echo>
+		  <exec executable="npm" dir="${project.basedir}" osfamily="unix" failonerror="true">
+		      <arg line="install" />
+		  </exec>
+		  <echo>
+		    <!-- NODE SERVER -->
+		    Starting node server with expanded js
+		  </echo>
+		  <exec executable="sudo" dir="${project.basedir}" osfamily="unix" failonerror="true">
+		      <arg line = "node server.js expanded" />
+		  </exec>
+		  <!--exec dir="${project.basedir}" executable="bash">
+		    <arg line="-c source ~/.bashrc"/>
+		  </exec--> 
+		</target>
+	      </configuration>
+	      <goals>
+		<goal>run</goal>
+	      </goals>
+	    </plugin>
+	</plugins>
+    </build>
+</project>

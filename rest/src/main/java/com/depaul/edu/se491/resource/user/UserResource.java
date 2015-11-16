@@ -176,12 +176,16 @@ public class UserResource {
     @Path("/create_user")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.TEXT_HTML})
-    public Response createUser(User u) throws AppException {
-        Long id = userService.createUser(u);
-        User c_u = userService.getUserById(id);
+    public Response createUser(@QueryParam("email")String email, @QueryParam("password")String password) throws AppException {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+
+        Long id = userService.createUser(user);
+        User cU = userService.getUserById(id);
 
         return Response.status(Response.Status.OK)
-                .entity("User " + c_u.getUuid() + " was created.")
+                .entity("User " + cU.getUuid() + " was created.")
                 .build();
     }
 

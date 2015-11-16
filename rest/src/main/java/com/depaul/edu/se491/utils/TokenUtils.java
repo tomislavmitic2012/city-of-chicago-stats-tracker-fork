@@ -1,6 +1,8 @@
 package com.depaul.edu.se491.utils;
 
 import com.depaul.edu.se491.global.AppConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.codec.Hex;
 
@@ -13,6 +15,11 @@ import java.security.NoSuchAlgorithmException;
 public class TokenUtils {
 
     public static final String MAGIC_KEY = AppConstants.SECRET_KEY;
+    private static final Logger logger = LoggerFactory.getLogger(TokenUtils.class);
+
+    private TokenUtils() {
+
+    }
 
     public static String createToken(UserDetails userDetails) {
         /* Expires in one hour */
@@ -35,6 +42,7 @@ public class TokenUtils {
         try {
             dig = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
+            logger.error("NoSuchAlgorithmException", e);
             throw new IllegalStateException("No MD5 algorithm is available");
         }
 

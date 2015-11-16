@@ -1,0 +1,13 @@
+Connecting to ec2_instance mongoDB server:
+
+To access your instance:
+Locate your private key file (SST-MONGODB.pem). The wizard automatically detects the key you used to launch the instance.
+
+Your key must not be publicly viewable for SSH to work. Use this command if needed:
+chmod 400 SST-MONGODB.pem
+
+Connect to your instance using its Public IP:
+54.152.152.29
+
+Example:
+ssh -i SST-MONGODB.pem ec2-user@54.152.152.29

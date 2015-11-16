@@ -17,12 +17,16 @@ public class UserTransfer {
     @XmlElement(name = "name")
     private String name;
 
+    @XmlElement(name = "uuid")
+    private String uuid;
+
     @XmlElement(name = "roles")
     private Map<String, Boolean> roles;
 
-    public UserTransfer(String name, Map<String, Boolean> roles) {
+    public UserTransfer(String name, Map<String, Boolean> roles, String uuid) {
         this.setName(name);
         this.setRoles(roles);
+        this.setUuid(uuid);
     }
 
     public String getName() {
@@ -39,5 +43,13 @@ public class UserTransfer {
 
     public void setRoles(Map<String, Boolean> roles) {
         this.roles = roles;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getUuid() {
+        return this.uuid;
     }
 }

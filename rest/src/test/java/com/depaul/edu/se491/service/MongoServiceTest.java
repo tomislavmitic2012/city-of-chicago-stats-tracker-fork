@@ -60,6 +60,7 @@ public class MongoServiceTest {
         verify(dao, never()).find(CRIMES);
         verify(dao, never()).findOne(CRIMES, CRIME_QUERY);
         verify(dao, never()).find(CRIMES, CRIME_QUERY);
+        verify(dao, never()).getCollectionNames();
 
         assertTrue(O.equals(o));
     }
@@ -73,6 +74,7 @@ public class MongoServiceTest {
         verify(dao, never()).find(CRIMES);
         verify(dao, never()).findOne(CRIMES);
         verify(dao, never()).find(CRIMES, CRIME_QUERY);
+        verify(dao, never()).getCollectionNames();
 
         assertTrue(O.equals(o));
     }
@@ -84,12 +86,25 @@ public class MongoServiceTest {
         verify(dao, never()).findOne(CRIMES, CRIME_QUERY);
         verify(dao, never()).findOne(CRIMES);
         verify(dao, never()).find(CRIMES, CRIME_QUERY);
+        verify(dao, never()).getCollectionNames();
+        verify(dao, never()).getCollectionNames();
     }
 
     @Test
     public void findTestWithSearchQuery() {
         ms.find(CRIMES, CRIME_QUERY);
         verify(dao).find(CRIMES, CRIME_QUERY);
+        verify(dao, never()).find(CRIMES);
+        verify(dao, never()).findOne(CRIMES, CRIME_QUERY);
+        verify(dao, never()).findOne(CRIMES);
+        verify(dao, never()).getCollectionNames();
+    }
+
+    @Test
+    public void getCollectionNamesTest() {
+        ms.getCollectionNames();
+        verify(dao).getCollectionNames();
+        verify(dao, never()).find(CRIMES, CRIME_QUERY);
         verify(dao, never()).find(CRIMES);
         verify(dao, never()).findOne(CRIMES, CRIME_QUERY);
         verify(dao, never()).findOne(CRIMES);

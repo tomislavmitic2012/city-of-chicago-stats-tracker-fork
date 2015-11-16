@@ -32,6 +32,7 @@ create table favorite_datasets(
 create table alert_queries(
         id integer not null auto_increment,
         user_id integer not null,
+        collection varchar(1000000),
         query varchar(1000000),
         notes varchar(1000000),
         startdate date not null,

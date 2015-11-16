@@ -2,6 +2,7 @@ package com.depaul.edu.se491.resource.user;
 
 import com.depaul.edu.se491.dao.user.UserEntity;
 import org.apache.commons.beanutils.BeanUtils;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -10,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+
 
 /**
  * Created by Tom Mitic on 2/13/15.
@@ -43,13 +45,17 @@ public class User implements Serializable{
     @XmlElement(name = "created_date")
     private Date createdDate;
 
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(User.class);
+
     public User(UserEntity userEntity) {
         try {
             BeanUtils.copyProperties(this, userEntity);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error(String.format("InvocationTargetException", e));
+
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error(String.format("IllegalAccessException", e));
+
         }
     }
 
@@ -61,7 +67,9 @@ public class User implements Serializable{
         this.email = email;
     }
 
-    public User() {}
+    public User() {
+
+    }
 
     public Long getId() {
         return id;

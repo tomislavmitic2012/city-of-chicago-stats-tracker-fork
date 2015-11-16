@@ -21,7 +21,6 @@ serverGlobals = require('./globals_prod')['serverGlobals'];
 app = express()
     .set('views', [__dirname, '/html/en'].join(''))
     .engine('html', require('ejs').renderFile)
-    .use('/', staticServe('html/en', staticOptions))
     .use('/css', staticServe(process.argv[2] === 'minified' ? 'css/min' : 'css', staticOptions))
     .use('/fonts', staticServe('fonts', staticOptions))
     .use('/images', staticServe('images', staticOptions))
@@ -34,12 +33,34 @@ app = express()
     .use('/js/templates', staticServe('js/templates/en', staticOptions))
     .use('/js/viewmodels', staticServe(process.argv[2] === 'minified' ? 'js/min/viewmodels' : 'js/viewmodels', staticOptions));
 
-app.get('/dashboard', function(req, res) {
+app.use(function(req, res, next) {
+    if (routes[url.parse(req.url).pathname] != null) {
+        next();
+    } else {
+        if (url.parse(req.url).pathname === '/') {
+            res.render(routes['/signin']);
+        } else {
+            res.render(routes['/404']);
+        }
+    }
+});
+
+app.get(routes['keys'][0], function(req, res) {
     res.render(routes[url.parse(req.url).pathname]);
 });
 
-app.get('*', function(req, res){
-    res.render('index.html');
+app.get(routes['keys'][1], function(req, res) {
+    res.render(routes[url.parse(req.url).pathname]);
 });
 
+app.get(routes['keys'][3], function(req, res) {
+    res.render(routes[url.parse(req.url).pathname]);
+});
+
+app.get(routes['keys'][4], function(req, res) {
+    res.render(routes[url.parse(req.url).pathname]);
+});
+app.get(routes['keys'][5], function(req, res) {
+    res.render(routes[url.parse(req.url).pathname]);
+});
 module.exports.appen = app;

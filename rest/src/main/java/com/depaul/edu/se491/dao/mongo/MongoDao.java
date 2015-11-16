@@ -4,6 +4,7 @@ import com.mongodb.*;
 import com.mongodb.jee.MongoHolder;
 
 import java.net.UnknownHostException;
+import java.util.Set;
 
 /**
  * Created by Tom Mitic on 2/28/15.
@@ -23,6 +24,13 @@ public interface MongoDao {
      * @return DBCursor
      */
     public DBCursor find(String collection);
+    
+    /**
+     * Returns the all records from mongo collection.
+     *
+     * @return DBCursor
+     */
+    public DBCursor findCollection(String collection);
 
     /**
      * Returns the first available result from Mongo DB based on the
@@ -39,6 +47,20 @@ public interface MongoDao {
      * @return DBCursor
      */
     public DBCursor find(String collection, String params);
+
+    /**
+     * Return all of the collections located within this respective DB.
+     *
+     * @return Set<String>
+     */
+    public Set<String> getCollectionNames();
+
+    /**
+     * Used for unit testing
+     *
+     * @param db
+     */
+    public void setDB(DB db);
 
     /**
      * A helper test for unit testing

@@ -38,15 +38,14 @@ public class UserDetailsSecurityConfig extends WebSecurityConfigurerAdapter {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                if(username.equals("admin")) {
+                if("admin".equals(username)) {
                     return new User(username, "password", true, true, true, true,
                             Arrays.asList(
                                     new SimpleGrantedAuthority("ROLE_USER"),
                                     new SimpleGrantedAuthority("ROLE_ADMIN")
                             )
                     );
-                }
-                else if(username.equals("user")) {
+                } else if("user".equals(username)) {
                     return new User(username, "password", true, true, true, true,
                             Arrays.asList(
                                     new SimpleGrantedAuthority("ROLE_USER")

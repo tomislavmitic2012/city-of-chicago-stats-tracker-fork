@@ -13,6 +13,8 @@
 
     <modules>
         <module>rest</module>
+		<module>ui</module>
         <module>SocrataDaemons</module>
+        <module>account_creator</module>
     </modules>
 </project>
